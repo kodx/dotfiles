@@ -1,0 +1,12 @@
+super + shift + Return
+	$TERMINAL
+
+super + {r,p,space}
+	dmenu_run 
+
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+	pulsevol.sh {minus,plus,mute}
+
+super + control + h
+	pulsevol.sh swport
+

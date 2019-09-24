@@ -1,0 +1,16 @@
+xkb_symbols "default" {
+    // key <AC10> { [ colon, semicolon ] };
+    // key <TLDE> { [ asciitilde, grave ] };
+};
+
+xkb_symbols "swap_esc" {
+    key <CAPS> { [ Escape ] };
+    key <ESC>  { [ Caps_Lock ] };
+};
+
+xkb_symbols "beast" {
+    // (keycode 166) XF86Back -> PageUp
+    key <I166>   { [ Prior] };
+    // (keycode 167) XF86Forward -> PageDown
+    key <I167>   { [ Next ] };
+};

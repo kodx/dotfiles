@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+# Author: kodx <kodx.org>
+
+# Clean up after GDM
+xprop -root -remove _NET_NUMBER_OF_DESKTOPS \
+   -remove _NET_DESKTOP_NAMES \
+   -remove _NET_CURRENT_DESKTOP 2> /dev/null
+
+# fix java apps in dwm
+export AWT_TOOLKIT=MToolkit
+export _JAVA_AWT_WM_NONREPARENTING=1
+#wmname LG3D &
+
+# set Qt theme
+# export QT_QPA_PLATFORMTHEME=qt5ct
+
+if [ -f "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi
+
+# This file runs when a DM logs you into a graphical session.
+# If you use startx/xinit, this file will also be sourced.
+
+# tint2 &
+compton -CGb &
+xsettingsd &
+xset r rate 300 35      # Speed xrate up
+xset -b
+dunst &                 # dunst for notifications
+sxhkd &
+setxkbmap -layout us,ru -variant ,winkeys -option grp:alt_space_toggle,ctrl:nocaps # set keyboard layout
+$HOME/bin/autostart/K50lightsOn.sh
+$HOME/bin/autostart/K60telegram.sh
+#yandex-disk start &
+#firefox -P default &
+

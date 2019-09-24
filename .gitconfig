@@ -1,0 +1,35 @@
+[user]
+	name = Yegor Bayev
+	email = kodxpub@gmail.com
+[alias] 
+	st = status
+	s = status --short
+	ci = commit -a
+	cm = commit -m
+	br = branch
+	co = checkout
+	w = whatchanged
+	df = diff
+	lg = log -p
+	llog = log --date=local
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short 
+	who = shortlog -s --
+	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+	pub = "!f() { git push -u ${1:-origin} $(git symbolic-ref HEAD); }; f"
+	pullf = "!sh -c 'git fetch --all; git reset --hard origin/master'"
+	up = pull --rebase
+	put = push origin HEAD
+[github]
+	user = kodx
+[core]
+	autocrlf = input
+[color]
+	ui = auto
+	diff = auto
+	status = auto
+
+[push]
+	default = simple
+[grep]
+	lineNumber = true

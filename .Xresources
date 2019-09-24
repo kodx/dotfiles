@@ -1,0 +1,222 @@
+! Xresources file
+! Author: kodx <kodx.org>
+! vim:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:
+
+! Font render settings
+! all available settings
+!Xft.dpi:                            96
+!Xft.autohint:                       0
+!Xft.antialias:                      1
+!Xft.hinting:                        1
+!Xft.hintstyle:                      hintslight
+!Xft.hintstyle:                      hintnone
+!Xft.hintstyle:                      hintfull
+!Xft.rgba:                           rgb
+!Xft.rgba:                           none
+!Xft.lcdfilter:                      lcddefault
+!Xft.lcdfilter:                      lcdlegacy
+!Xft.lcdfilter:                      lcdlight
+!Xft.lcdfilter:                      lcdnone
+
+! font render config {
+Xft.rgba:                           rgb
+Xft.antialias:                      1
+Xft.hinting:                        1
+Xft.hintstyle:                      hintslight
+Xft.lcdfilter:                      lcddefault
+Xcursor.theme:                      default
+! font render config }
+
+! tango dark theme
+
+#define t_background        #111111
+#define t_foreground        #b4b4b4
+#define t_cursor            #ffaf00
+#define t_00_black          #000000
+#define t_08_gray           #555753
+#define t_01_red            #ff6565
+#define t_09_red_b          #ff8d8d
+#define t_02_green          #93d44f
+#define t_10_green_b        #c8e7a8
+#define t_03_orange         #eab93d
+#define t_11_yellow         #ffc123
+#define t_04_blue           #204a87
+#define t_12_blue_b         #3465a4
+#define t_05_purple         #ce5c00
+#define t_13_magenta        #f57900
+#define t_06_aqua           #89b6e2
+#define t_14_cyan           #46a4ff
+#define t_07_white          #cccccc
+#define t_15_gray_b         #ffffff
+
+! Solarized color scheme for the X Window System
+! http://ethanschoonover.com/solarized
+
+! Dark
+!#define S_base03            #002b36
+!#define S_base02            #073642
+!#define S_base01            #586e75
+!#define S_base00            #657b83
+!#define S_base0             #839496
+!#define S_base1             #93a1a1
+!#define S_base2             #eee8d5
+!#define S_base3             #fdf6e3
+
+! Light
+!#define S_base03            #fdf6e3
+!#define S_base02            #eee8d5
+!#define S_base01            #93a1a1
+!#define S_base00            #839496
+!#define S_base0             #657b83
+!#define S_base1             #586e75
+!#define S_base2             #073642
+!#define S_base3             #002b36
+
+!#define t_background        S_base03
+!#define t_foreground        S_base0
+!#define t_cursor            S_base1
+!#define t_00_black          S_base02
+!#define t_08_gray           S_base03
+!#define t_01_red            #dc322f
+!#define t_09_red_b          #cb4b16
+!#define t_02_green          #859900
+!#define t_10_green_b        S_base01
+!#define t_03_orange         #b58900
+!#define t_11_yellow         S_base00
+!#define t_04_blue           #268bd2
+!#define t_12_blue_b         S_base0
+!#define t_05_purple         #d33682
+!#define t_13_magenta        #6c71c4
+!#define t_06_aqua           #2aa198
+!#define t_14_cyan           S_base1
+!#define t_07_white          S_base2
+!#define t_15_gray_b         S_base3
+!#define t_fading            40
+!#define t_fadeColor         S_base03
+!#define t_pColorBackground  S_base01
+!#define t_pColorForeground  S_base1
+
+
+! xterm settings
+
+xterm*foreground:           t_foreground
+xterm*background:           t_background
+xterm*color0:               t_00_black
+xterm*color8:               t_08_gray
+xterm*color1:               t_01_red
+xterm*color9:               t_09_red_b
+xterm*color2:               t_02_green
+xterm*color10:              t_10_green_b
+xterm*color3:               t_03_orange
+xterm*color11:              t_11_yellow
+xterm*color4:               t_04_blue
+xterm*color12:              t_12_blue_b
+xterm*color5:               t_05_purple
+xterm*color13:              t_13_magenta
+xterm*color6:               t_06_aqua
+xterm*color14:              t_14_cyan
+xterm*color7:               t_07_white
+xterm*color15:              t_15_gray_b
+xterm*cursorColor:          t_cursor
+
+! xterm*font:                         -*-terminus-medium-r-*-*-16-*-*-*-*-*-iso10646-1
+! xterm*boldMode:                     false
+XTerm*metaSendsEscape:              true
+XTerm*eightBitInput:                false
+
+xterm*faceName: Monospace
+xterm*faceSize: 11
+xterm*renderFont: true
+
+! xscreensaver settings
+
+xscreensaver.Dialog.headingFont:        -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.Dialog.bodyFont:           -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.Dialog.labelFont:          -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.Dialog.unameFont:          -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.Dialog.buttonFont:         -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.Dialog.dateFont:           -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+xscreensaver.passwd.passwdFont:         -*-terminus-*-r-*-*-16-*-*-*-*-*-*-*
+
+
+! rxvt-unicode
+
+URxvt.foreground:           t_foreground
+URxvt.background:           t_background
+URxvt.color0:               t_00_black
+URxvt.color8:               t_08_gray
+URxvt.color1:               t_01_red
+URxvt.color9:               t_09_red_b
+URxvt.color2:               t_02_green
+URxvt.color10:              t_10_green_b
+URxvt.color3:               t_03_orange
+URxvt.color11:              t_11_yellow
+URxvt.color4:               t_04_blue
+URxvt.color12:              t_12_blue_b
+URxvt.color5:               t_05_purple
+URxvt.color13:              t_13_magenta
+URxvt.color6:               t_06_aqua
+URxvt.color14:              t_14_cyan
+URxvt.color7:               t_07_white
+URxvt.color15:              t_15_gray_b
+URxvt.cursorColor:          t_cursor
+
+
+! use xfontsel to get font string
+URxvt.font:                xft:Monospace:size=11
+URxvt.letterSpace:         -1
+
+!URxvt.termName:                 rxvt
+URxvt.saveLines:                32767
+URxvt.scrollBar:                false
+URxvt.loginShell:               true
+!select not the whole line
+URxvt.tripleclickwords:         true
+URxvt.iso14755_52:              false
+URxvt.iso14755:                 false
+
+URxvt.visualBell:               false
+URxvt.urgentOnBell:             false
+URxvt.cursorBlink:              false
+URxvt.depth:                    24
+
+!urxvt tabs
+URxvt.perl-ext-common:          default,matcher,tabbedex,clipboard
+
+! tabbedex settings
+URxvt.tabbed.tabbar-fg:         1
+URxvt.tabbed.tabbar-bg:         0
+URxvt.tabbed.tab-fg:            0
+URxvt.tabbed.tab-bg:            2
+! turn off default keybindings
+URxvt.tabbed.no-tabbedex-keys:  yes
+URxvt.tabbed.autohide:          no
+
+! tabbedex keybindings
+! Shift+Left -> switch to left tab
+URxvt.keysym.S-0xff51:          perl:tabbedex:prev_tab
+! Shift+Right -> switch to right tab
+URxvt.keysym.S-0xff53:          perl:tabbedex:next_tab
+! Shift+Left -> move tab left
+URxvt.keysym.C-M-0xff51:        perl:tabbedex:move_tab_left
+! Shift+Right -> move tab right
+URxvt.keysym.C-M-0xff53:        perl:tabbedex:move_tab_right
+! Control+Down -> kill tab
+URxvt.keysym.C-0xff52:          perl:tabbedex:close_tab
+! Control+Up -> new tab
+URxvt.keysym.C-0xff54:          perl:tabbedex:new_tab
+! cliboard commands
+URxvt.keysym.Mod4-c:            perl:clipboard:copy
+URxvt.keysym.Mod4-v:            perl:clipboard:paste
+
+URxvt.urlLauncher:              firefox
+URxvt.matcher.button:           2
+
+! russian utf-8
+URxvt.matcher.pattern.0:  (?:https?:\\/\\/|ftp:\\/\\/|news:\\/\\/|mailto:|file:\\/\\/|\\bwww\\.)\n\
+                           [a-zA-Z0-9\\x{0410}-\\x{044F}\\-\\@;\\/?:&=%\\$_.+!*\\x27,~#]*\n\
+                           (\n\
+                             \\([a-zA-Z0-9\\x{0410}-\\x{044F}\\-\\@;\\/?:&=%\\$_.+!*\\x27,~#]*\\)| # Allow a pair of matched parentheses\n\
+                             [a-zA-Z0-9\\x{0410}-\\x{044F}\\-\\@;\\/?:&=%\\$_+*~]  # exclude some trailing characters (heuristic)\n\
+                           )+
+

@@ -1,0 +1,125 @@
+#!/usr/bin/env sh
+
+# check if command exists
+# usage:
+# kxwhich make gcc bison && echo 'make, gcc and bison commands found'
+kxwhich() {
+    local retcd=0
+    for arg in "$@"; do
+        command -v "$arg" > /dev/null 2>&1
+        retcd=$?
+        if [ $retcd -ne 0 ]; then
+            break
+        fi
+    done
+    return $retcd
+}
+
+mozillavacuum() {
+    if kxwhich sqlite3; then
+        for x in $(find $HOME/.mozilla -type f -name '*.sqlite' -print); do
+            sqlite3 $x VACUUM
+        done
+    fi
+}
+
+# set alias if command present
+# usage:
+# $ aliasifpreset mcd mc '-d'
+# sets "alias mcd='mc -d'" if mc command is present
+aliasifpresent() {
+    if [ "$#" -lt 2 ]; then
+        return
+    fi
+    $(! command -v "$2" > /dev/null 2>&1) && return
+    
+    local aliascmd="$2"
+    local aliasname="$1"
+    if [ "$#" -gt 2 ]; then
+        shift 2
+        for arg in "$@"; do
+            aliascmd="$aliascmd $arg"
+        done
+    fi
+    alias $aliasname="$aliascmd"
+}
+
+
+# make all ' ' '()' ',' '[]' '\' become '_'
+sanitizefiles() {
+    for a in *; do
+        file=$(echo $a | tr A-Z a-z | tr ' ' _ | tr '(' _ | tr ')' _ | tr ',' _  | tr '[' _ | tr \' _ | tr ']' _ )
+        [ ! -f $file ] && mv "$a" $file
+    done
+}
+
+runonce() {
+    if [ $(pgrep -c $1) -eq 0 ]; then
+        $@;
+    fi
+}
+
+if kxwhich dircolors; then
+    test -r $HOME/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    LSOPTS='--color=auto'
+fi
+
+alias ..='cd ..' \
+    ...='cd ../..' \
+    ....='cd ../../..' \
+    cd..='cd ..' \
+    rm='rm -i' \
+	mkd='mkdir -pv' \
+    p='pwd' \
+    c='clear' \
+    scr='screen -xRR' \
+    su="su -s $SHELL" \
+    h='htop' \
+    hu="htop -u $(whoami)" \
+    j='jobs' \
+    k='pkill' \
+    tmx='tmux attach || tmux' \
+    e="$EDITOR" \
+    se='sudoedit' \
+    vd='vimdiff' \
+	f="$FILEMAN" \
+    m='most' \
+    q='exit' \
+    psaux='ps auxfww | sed "s/^\(\w\+\s\+\)\(\w\+\)/\1\x1B[1;32m\2\x1B[0m/"' \
+    ls="ls $LS_OPTIONS $LSOPTS -hN --group-directories-first" \
+    l1="ls $LS_OPTIONS -1 --sort version" \
+    la="ls $LS_OPTIONS -A --sort version" \
+    ll="ls $LS_OPTIONS -lh --sort version" \
+    grep='grep --color=auto' \
+    fgrep='fgrep --color=auto' \
+    egrep='egrep --color=auto' \
+    encaru='enca -L ru -x utf8' \
+    mem='free -h' \
+    dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$PWD" \
+    yt="youtube-dl --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
+    yta='yt -x -f bestaudio/best' \
+    mpva='mpv -vo null --no-audio-display'
+
+# void linux package manager
+# alias pac='sudo vpm --color=yes'
+
+# debian based package manager
+alias pac='sudo aptitude' \
+    pacs='pac search' \
+    paci='pac install' \
+    pacd='pac purge' \
+    pacn='pac show' \
+    pacpurge-cached='pac purge \~c' \
+    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+
+alias SS='sudo systemctl'
+
+aliasifpresent mc mc '-d'
+aliasifpresent du du '-h'
+aliasifpresent make colormake
+aliasifpresent diff colordiff
+aliasifpresent df pydf
+aliasifpresent subl '/opt/sublime_text_3/sublime_text'
+aliasifpresent pyradio $HOME/bin/pyradio/pyradio $HOME/bin/pyradio/stations.csv
+
+unset aliasifpresent

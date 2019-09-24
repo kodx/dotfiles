@@ -1,0 +1,7 @@
+Bash script that prevents the screensaver and display power management (DPMS) to be activated when you are watching Flash(and HTML5) Videos fullscreen on Firefox, Chromium, Google Chrome.
+Can detect mplayer, minitube, and VLC when they are fullscreen too.
+Also, screensaver can be prevented when certain specified programs are running.
+This script can be used to control X11 Screen Saver Extension and DPMS settings, read the source.
+Optionally can delay the screensaver when specific outputs are connected.
+
+License: GNU GPL version 2.0 or above
