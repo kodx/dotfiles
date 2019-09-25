@@ -12,7 +12,7 @@ INSTALL
 : <<'SETUP'
 cd $HOME
 git clone --bare https://github.com/kodx/dotfiles.git $HOME/.dotfiles
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 dotfiles config --local status.showUntrackedFiles no
 dotfiles checkout -f
 SETUP
@@ -20,7 +20,7 @@ SETUP
 : <<'INITIALSETUP'
 mkdir $HOME/.dotfiles
 git init --bare $HOME/.dotfiles
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 dotfiles config --local status.showUntrackedFiles no
 dotfiles remote add origin https://github.com/kodx/dotfiles.git
 dotfiles add .bashrc
@@ -30,7 +30,7 @@ git push -u origin master
 INITIALSETUP
 
 : <<'USAGE'
-alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 dotfiles add .profile
 dotfiles status
 dotfiles commit -m "The commit"
@@ -38,25 +38,24 @@ dotfiles push
 USAGE
 
 usage() {
-    local SPATH="$0"
     cat <<EOM
     kodx dotfiles setup
     Usage:
 
     install dotfiles and applications
-    $ INSALL=1 $SPATH
+    $ INSALL=1 $0
     or
-    $ $SPATH insall
+    $ $0 insall
 
     install dotfiles
-    $ INSDOTFILES=1 $SPATH
+    $ INSDOTFILES=1 $0
     or
-    $ $SPATH insdotfiles
+    $ $0 insdotfiles
 
     install apps
-    $ INSAPPS=1 $SPATH
+    $ INSAPPS=1 $0
     or
-    $ $SPATH insapps
+    $ $0 insapps
 EOM
 }
 
@@ -67,11 +66,13 @@ if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSALL ] ; the
 fi
 
 insdotfiles() {
+    local DFDIR="$HOME/.dotfiles"
+    [ -d $DFDIR ] && rm -rf $DFDIR
     cd $HOME
-    git clone --bare https://github.com/kodx/dotfiles.git $HOME/.dotfiles
-    alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-    dotfiles config --local status.showUntrackedFiles no
-    dotfiles checkout -f
+    git clone --bare https://github.com/kodx/dotfiles.git $DFDIR
+    local dotfiles="git --git-dir=$DFDIR --work-tree=$HOME"
+    $dotfiles config --local status.showUntrackedFiles no
+    $dotfiles checkout -f
     echo 'dotfiles install complete'
     return 0
 }
@@ -86,10 +87,12 @@ getapp() {
     else
         GETOPT='--hsts-file /dev/null -nv -O'
     fi
-    local BINPATH="$HOME/bin/$(basename $2)"
+    local BINPATH="$HOME/bin"
+    local CMDPATH="$BINPATH/$(basename $2)"
+    mkdir -p $BINPATH
     echo "downloading $2"
-    $1 $2 $GETOPT $BINPATH
-    chmod u+rx $BINPATH
+    $1 $2 $GETOPT $CMDPATH
+    chmod u+rx $CMDPATH
 }
 
 insapps() {
@@ -108,9 +111,9 @@ insapps() {
 }
 
 if [ $INSALL ] || $(test "$1" = 'insall'); then
-    insdotfiles 
+    insdotfiles
     insapps
-else 
+else
     [ $INSDOTFILES ] || [ "$1" = 'insdotfiles' ] && insdotfiles
     [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
 fi
