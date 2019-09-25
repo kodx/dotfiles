@@ -14,6 +14,9 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # set Qt theme
 # export QT_QPA_PLATFORMTHEME=qt5ct
 
+# run gnome-keyring-daemon and export vars 
+#eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)
+
 if [ -f "$HOME/.profile" ]; then
     . "$HOME/.profile"
 fi

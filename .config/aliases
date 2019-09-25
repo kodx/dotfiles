@@ -6,7 +6,7 @@
 kxwhich() {
     local retcd=0
     for arg in "$@"; do
-        command -v "$arg" > /dev/null 2>&1
+        command -v "$arg" > /dev/null
         retcd=$?
         if [ $retcd -ne 0 ]; then
             break
@@ -31,7 +31,7 @@ aliasifpresent() {
     if [ "$#" -lt 2 ]; then
         return
     fi
-    $(! command -v "$2" > /dev/null 2>&1) && return
+    $(! command -v "$2" > /dev/null) && return
     
     local aliascmd="$2"
     local aliasname="$1"

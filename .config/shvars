@@ -4,7 +4,7 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-export PATH="$HOME/.local/bin:$HOME/bin:$HOME/bin/youtube-dl:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 export EDITOR='vim'
 export TERMINAL='urxvtc'
 export BROWSER='firefox'
