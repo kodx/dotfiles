@@ -6,6 +6,7 @@
 	s = status --short
 	ci = commit -a
 	cm = commit -m
+	cma = commit -a -m
 	br = branch
 	co = checkout
 	w = whatchanged
@@ -28,7 +29,6 @@
 	ui = auto
 	diff = auto
 	status = auto
-
 [push]
 	default = simple
 [grep]
