@@ -4,7 +4,16 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+# source from https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
+pathadd() {
+    case ":$PATH:" in
+        *":$1:"*) :;; # already there
+        *) PATH="$1:$PATH";; # or PATH="$PATH:$1"
+    esac
+}
+
+pathadd "$HOME/.local/bin"
+pathadd "$HOME/bin"
 export EDITOR='vim'
 export TERMINAL='urxvtc'
 export BROWSER='firefox'
@@ -14,15 +23,7 @@ export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc-2.0"
 export MOZ_DISABLE_PANGO=1
 export SDL_AUDIODRIVER='pulse'
 
-# less/man colors
 export LESS=-R
-#export LESS_TERMCAP_mb="$(printf '%b' '.[1;31m')"; a="${a%_}"
-#export LESS_TERMCAP_md="$(printf '%b' '.[1;36m')"; a="${a%_}"
-#export LESS_TERMCAP_me="$(printf '%b' '.[0m')"; a="${a%_}"
-#export LESS_TERMCAP_so="$(printf '%b' '.[01;44;33m')"; a="${a%_}"
-#export LESS_TERMCAP_se="$(printf '%b' '.[0m')"; a="${a%_}"
-#export LESS_TERMCAP_us="$(printf '%b' '.[1;32m')"; a="${a%_}"
-#export LESS_TERMCAP_ue="$(printf '%b' '.[0m')"; a="${a%_}"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -37,3 +38,4 @@ export GPODDER_DOWNLOAD_DIR=$HOME/download/podcast
 # quick cd to underlying dirs
 export CDPATH=:..:~:~/work/dev:~/work/projects
 
+unset pathadd

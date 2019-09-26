@@ -10,3 +10,5 @@ XF86Audio{LowerVolume,RaiseVolume,Mute}
 super + control + h
 	pulsevol.sh swport
 
+control + alt + p
+    firefox -no-remote -private-window -P proxied
