@@ -1,0 +1,10 @@
+[Keyboard]
+KeyboardRepeating=0
+NumLock=2
+RepeatDelay=350
+RepeatRate=35
+
+[Mouse]
+XLbInptPointerAcceleration=-0.6
+cursorSize=0
+cursorTheme=Breeze_Snow

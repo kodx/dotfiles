@@ -1,0 +1,13 @@
+[Layout]
+DisplayNames=,
+LayoutList=us,ru
+LayoutLoopCount=-1
+Model=pc101
+Options=grp_led:scroll,grp:alt_space_toggle,ctrl:nocaps
+ResetOldOptions=true
+ShowFlag=false
+ShowLabel=true
+ShowLayoutIndicator=true
+ShowSingle=false
+SwitchMode=Window
+Use=true
