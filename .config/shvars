@@ -6,6 +6,7 @@
 
 # source from https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
 pathadd() {
+    [ ! -d "$1" ] && return 0
     case ":$PATH:" in
         *":$1:"*) :;; # already there
         *) PATH="$1:$PATH";; # or PATH="$PATH:$1"
@@ -18,9 +19,10 @@ export EDITOR='vim'
 export TERMINAL='urxvtc'
 export BROWSER='firefox'
 export READER='zathura'
-export FILEMAN='mc'
+export FILEMAN='pcmanfm'
+export TASKMAN='xfce4-taskmanager'
 export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc-2.0"
-export MOZ_DISABLE_PANGO=1
+#export MOZ_DISABLE_PANGO=1
 export SDL_AUDIODRIVER='pulse'
 
 export LESS=-R

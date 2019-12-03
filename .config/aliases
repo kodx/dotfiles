@@ -101,16 +101,17 @@ alias ..='cd ..' \
     mpva='mpv -vo null --no-audio-display'
 
 # void linux package manager
-# alias pac='sudo vpm --color=yes'
+alias pac='sudo vpm --color=yes'
 
 # debian based package manager
-alias pac='sudo aptitude' \
-    pacs='pac search' \
-    paci='pac install' \
-    pacd='pac purge' \
-    pacn='pac show' \
-    pacpurge-cached='pac purge \~c' \
-    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+# alias pac='sudo aptitude' \
+#    pacs='pac search' \
+#    paci='pac install' \
+#    pacd='pac purge' \
+#    pacn='pac show' \
+#    pacpurge-cached='pac purge \~c' \
+#    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+
 
 alias SS='sudo systemctl'
 
@@ -119,7 +120,9 @@ aliasifpresent du du '-h'
 aliasifpresent make colormake
 aliasifpresent diff colordiff
 aliasifpresent df pydf
-aliasifpresent subl '/opt/sublime_text_3/sublime_text'
+aliasifpresent subl "$HOME/work/programs/sublime_text_3/sublime_text"
+aliasifpresent vscodium "$HOME/work/programs/vscodium/codium"
+aliasifpresent telegram "$HOME/work/programs/Telegram/Telegram"
 aliasifpresent pyradio $HOME/bin/pyradio/pyradio $HOME/bin/pyradio/stations.csv
 
 unset aliasifpresent

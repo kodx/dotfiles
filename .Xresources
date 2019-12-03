@@ -163,8 +163,8 @@ URxvt.cursorColor:          t_cursor
 
 
 ! use xfontsel to get font string
-URxvt.font:                xft:Monospace:size=11
-URxvt.letterSpace:         -1
+URxvt.font:                xft:Monospace:size=12
+!URxvt.letterSpace:         -1
 
 !URxvt.termName:                 rxvt
 URxvt.saveLines:                32767

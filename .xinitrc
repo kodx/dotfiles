@@ -4,5 +4,6 @@
 # xinitrc runs automatically when you run startx.
 [ -f $HOME/.xprofile ] && . $HOME/.xprofile
 
-exec $HOME/bin/dwm 
+#exec $HOME/bin/dwm 
+exec /usr/bin/openbox-session
 

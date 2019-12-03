@@ -1,8 +1,26 @@
 super + shift + Return
 	$TERMINAL
 
+control + alt + t
+    $TERMINAL
+
+super + e
+    $FILEMAN
+
+control + shift + Escape
+    $TASKMAN
+
 super + {r,p,space}
 	dmenu_run 
+
+alt + F2
+    rofi
+
+Print
+    scrot
+
+control + shift + Print
+    scrot -s
 
 XF86Audio{LowerVolume,RaiseVolume,Mute}
 	pulsevol.sh {minus,plus,mute}
@@ -12,3 +30,6 @@ super + control + h
 
 control + alt + p
     firefox -no-remote -private-window -P proxied
+
+control + alt + b
+    firefox -no-remote -P default

@@ -11,7 +11,7 @@ INSTALL
 
 : <<'SETUP'
 cd $HOME
-git clone --bare https://github.com/kodx/dotfiles.git $HOME/.dotfiles
+git clone --bare git@github.com:kodx/dotfiles.git $HOME/.dotfiles
 alias dotfiles="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 dotfiles config --local status.showUntrackedFiles no
 dotfiles checkout -f
@@ -22,7 +22,7 @@ mkdir $HOME/.dotfiles
 git init --bare $HOME/.dotfiles
 alias dotfiles="git --git-dir=$HOME/.dotfiles --work-tree=$HOME"
 dotfiles config --local status.showUntrackedFiles no
-dotfiles remote add origin https://github.com/kodx/dotfiles.git
+dotfiles remote add origin git@github.com:kodx/dotfiles.git
 dotfiles add .bashrc
 dotfiles status
 dotfiles commit -m "initial commit"
@@ -41,17 +41,14 @@ usage() {
     cat <<EOM
     kodx dotfiles setup
     Usage:
-
     install dotfiles and applications
     $ INSALL=1 $0
     or
     $ $0 insall
-
     install dotfiles
     $ INSDOTFILES=1 $0
     or
     $ $0 insdotfiles
-
     install apps
     $ INSAPPS=1 $0
     or
@@ -66,10 +63,15 @@ if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSALL ] ; the
 fi
 
 insdotfiles() {
+    echo 'installing dotfiles...'
+    if $(! command -v git > /dev/null); then
+        echo 'git not found, abort'
+        return
+    fi
     local DFDIR="$HOME/.dotfiles"
     [ -d $DFDIR ] && rm -rf $DFDIR
     cd $HOME
-    git clone --bare https://github.com/kodx/dotfiles.git $DFDIR
+    git clone --bare git@github.com:kodx/dotfiles.git $DFDIR
     local dotfiles="git --git-dir=$DFDIR --work-tree=$HOME"
     $dotfiles config --local status.showUntrackedFiles no
     $dotfiles checkout -f
@@ -85,20 +87,31 @@ getapp() {
     if [ "$1" = 'curl' ]; then
         GETOPT='-#L -o'
     else
-        GETOPT='--hsts-file /dev/null -nv -O'
+        GETOPT='-q --hsts-file /dev/null -nv -N -O'
     fi
     local BINPATH="$HOME/bin"
     local CMDPATH="$BINPATH/$(basename $2)"
     mkdir -p $BINPATH
     echo "downloading $2"
     $1 $2 $GETOPT $CMDPATH
-    chmod u+rx $CMDPATH
+    [ -f $CMDPATH ] && chmod u+rx $CMDPATH
+}
+
+getcmd() {
+    if $(command -v 'wget' > /dev/null); then 
+        echo 'wget'
+    elif $(command -v 'curl' > /dev/null); then 
+        echo 'curl'
+    else 
+        echo ''
+    fi
 }
 
 insapps() {
-    local GETCMD=$(if $(command -v 'curl' > /dev/null); then echo 'curl'; elif $(command -v 'wget' > /dev/null); then echo 'wget'; else echo ''; fi)
+    echo 'installing applications ...'
+    local GETCMD=$(getcmd)
     if [ -z $GETCMD ]; then
-        echo 'curl or wget not found, exit'
+        echo 'wget or curl not found, abort'
         return
     fi
     # set urls to apps
@@ -118,4 +131,5 @@ else
     [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
 fi
 
-unset insdotfiles insapps usage getapp
+unset insdotfiles insapps usage getapp getcmd
+

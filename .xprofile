@@ -12,7 +12,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 #wmname LG3D &
 
 # set Qt theme
-# export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_QPA_PLATFORMTHEME=qt5ct
 
 # run gnome-keyring-daemon and export vars 
 #eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)
@@ -25,15 +25,15 @@ fi
 # If you use startx/xinit, this file will also be sourced.
 
 # tint2 &
-compton -CGb &
-xsettingsd &
-xset r rate 300 35      # Speed xrate up
-xset -b
-dunst &                 # dunst for notifications
-sxhkd &
-setxkbmap -layout us,ru -variant ,winkeys -option grp:alt_space_toggle,ctrl:nocaps # set keyboard layout
-$HOME/bin/autostart/K50lightsOn.sh
-$HOME/bin/autostart/K60telegram.sh
+#compton -CGb &
+#xsettingsd &
+#xset r rate 300 35      # Speed xrate up
+#xset -b
+#dunst &                 # dunst for notifications
+#sxhkd &
+#setxkbmap -layout us,ru -variant ,winkeys -option grp:alt_space_toggle,ctrl:nocaps # set keyboard layout
+#$HOME/bin/autostart/K50lightsOn.sh
+#$HOME/bin/autostart/K60telegram.sh
 #yandex-disk start &
 #firefox -P default &
 
