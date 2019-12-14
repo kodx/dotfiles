@@ -6,4 +6,4 @@
 
 #exec $HOME/bin/dwm 
 exec /usr/bin/openbox-session
-
+#exec /usr/bin/startlxqt

@@ -11,13 +11,16 @@ control + shift + Escape
     $TASKMAN
 
 super + {r,p,space}
-	dmenu_run 
+	rofi -combi-modi window,drun,run -show combi -modi combi
 
 alt + F2
     rofi
 
 Print
     scrot
+
+super + shift + q
+    xlogout
 
 control + shift + Print
     scrot -s

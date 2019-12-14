@@ -2,8 +2,8 @@
 Name=VSCodium
 Comment=Code Editing. Redefined.
 GenericName=Text Editor
-Exec=~/work/programs/vscodium/codium --unity-launch %F
-Icon=~/work/programs/vscodium/resources/app/resources/linux/code.png
+Exec=/home/kodx/work/programs/vscodium/codium --unity-launch %F
+Icon=/home/kodx/work/programs/vscodium/resources/app/resources/linux/code.png
 Type=Application
 StartupNotify=true
 StartupWMClass=VSCodium
@@ -14,6 +14,6 @@ Keywords=vscode;
 
 [Desktop Action new-empty-window]
 Name=New Empty Window
-Exec=~/work/programs/vscodium/codium --new-window %F
-Icon=~/work/programs/vscodium/resources/app/resources/linux/code.png
+Exec=/home/kodx/work/programs/vscodium/codium --new-window %F
+Icon=/home/kodx/work/programs/vscodium/resources/app/resources/linux/code.png
 

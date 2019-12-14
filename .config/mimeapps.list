@@ -4,11 +4,9 @@ x-scheme-handler/mailto=mail.desktop;
 text/plain=text.desktop;
 text/x-shellscript=text.desktop;
 application/pdf=pdf.desktop;
-image/png=img.desktop;
-image/jpeg=gpicview.desktop
+image/png=img.desktop
+image/jpeg=img.desktop
 image/gif=img.desktop;
 application/rss+xml=rss.desktop
 x-scheme-handler/tg=telegramdesktop.desktop
 
-[Added Associations]
-image/jpeg=gpicview.desktop;

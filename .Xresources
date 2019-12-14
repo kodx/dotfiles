@@ -24,7 +24,6 @@ Xft.antialias:                      1
 Xft.hinting:                        1
 Xft.hintstyle:                      hintslight
 Xft.lcdfilter:                      lcddefault
-Xcursor.theme:                      default
 ! font render config }
 
 ! tango dark theme
@@ -163,7 +162,8 @@ URxvt.cursorColor:          t_cursor
 
 
 ! use xfontsel to get font string
-URxvt.font:                xft:Monospace:size=12
+!URxvt.font:                 xft:Monospace:size=12
+URxvt.font:                 xft:Fira Code Medium:size=11
 !URxvt.letterSpace:         -1
 
 !URxvt.termName:                 rxvt
@@ -220,3 +220,4 @@ URxvt.matcher.pattern.0:  (?:https?:\\/\\/|ftp:\\/\\/|news:\\/\\/|mailto:|file:\
                              [a-zA-Z0-9\\x{0410}-\\x{044F}\\-\\@;\\/?:&=%\\$_+*~]  # exclude some trailing characters (heuristic)\n\
                            )+
 
+Xcursor.theme: Vanilla-DMZ

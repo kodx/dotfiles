@@ -4,6 +4,7 @@
 [alias] 
 	st = status
 	s = status --short
+    au = add -u
 	ci = commit -a
 	cm = commit -m
 	cma = commit -a -m
