@@ -4,15 +4,10 @@
 # usage:
 # kxwhich make gcc bison && echo 'make, gcc and bison commands found'
 kxwhich() {
-    local retcd=0
-    for arg in "$@"; do
-        command -v "$arg" > /dev/null
-        retcd=$?
-        if [ $retcd -ne 0 ]; then
-            break
-        fi
+    for arg in $@; do
+        $(command -v "$arg" > /dev/null) || return 1
     done
-    return $retcd
+    return 0
 }
 
 mozillavacuum() {
@@ -73,6 +68,7 @@ alias ..='cd ..' \
     p='pwd' \
     c='clear' \
     scr='screen -xRR' \
+    mctab='mc && $SHELL' \
     su="su -s $SHELL" \
     h='htop' \
     hu="htop -u $(whoami)" \
@@ -101,22 +97,23 @@ alias ..='cd ..' \
     mpva='mpv -vo null --no-audio-display'
 
 # void linux package manager
-alias pac='sudo vpm --color=yes'
+#alias pac='sudo vpm --color=yes'
 
 # debian based package manager
-# alias pac='sudo aptitude' \
-#    pacs='pac search' \
-#    paci='pac install' \
-#    pacd='pac purge' \
-#    pacn='pac show' \
-#    pacpurge-cached='pac purge \~c' \
-#    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+alias pac='sudo aptitude' \
+    pacs='pac search' \
+    paci='pac install' \
+    pacd='pac purge' \
+    pacn='pac show' \
+    pacpurge-cached='pac purge \~c' \
+    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
 
 
 alias SS='sudo systemctl'
 
 aliasifpresent mc mc '-d'
 aliasifpresent du du '-h'
+aliasifpresent showports ss '-lntu'
 aliasifpresent make colormake
 aliasifpresent diff colordiff
 aliasifpresent df pydf

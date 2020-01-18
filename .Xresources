@@ -163,8 +163,10 @@ URxvt.cursorColor:          t_cursor
 
 ! use xfontsel to get font string
 !URxvt.font:                 xft:Monospace:size=12
+!URxvt.font:                 xft:Fira Code Medium:size=11,xft:Noto Emoji,xft:Icons,xft:Symbola,xft:PowerlineSymbols
+!URxvt.font:                 xft:Fira Code Medium:size=11,xft:Noto Emoji:size=11
 URxvt.font:                 xft:Fira Code Medium:size=11
-!URxvt.letterSpace:         -1
+URxvt.letterSpace:         -1
 
 !URxvt.termName:                 rxvt
 URxvt.saveLines:                32767
