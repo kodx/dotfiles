@@ -63,26 +63,53 @@ usage() {
     $ INSCFGS=1 $0
     or
     $ $0 inscfgs
+
+    fix git config link to ssh
+    $ FIXLINK=1 $0
+    or
+    $ $0 fixlink
 EOM
 }
 
-if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSALL ] && [ ! $INSCFGS ] ; then
+if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSALL ] && [ ! $INSCFGS ] && [ ! $FIXLINK] ; then
     usage
     unset usage
-    return
+    return 0
 fi
+
+# check is commands present
+checkcmd() {
+    for arg in $@; do
+        if ! $(command -v "$arg" > /dev/null); then
+            echo "command $arg not found, abort"
+            return 1
+        fi
+    done
+    return 0
+}
+
+# change git link in config to ssh connection
+fixgitlink() {
+    echo 'fixing git config link...'
+    local _cfgpath="$HOME/.dotfiles/config"
+    if [ ! -e $_cfgpath ]; then
+        echo 'git config not found, abort.'
+        return 1
+    fi
+    sed -i -- 's|https\://github\.com/|git\@github\.com\:|g' $_cfgpath
+    echo 'fixing git config done.'
+    return 0
+}
 
 insdotfiles() {
     echo 'installing dotfiles...'
-    if $(! command -v git > /dev/null); then
-        echo 'git not found, abort'
-        return
-    fi
-    local DFDIR="$HOME/.dotfiles"
-    [ -d $DFDIR ] && rm -rf $DFDIR
+    checkcmd 'git' || return 1
+
+    local _dfdir="$HOME/.dotfiles"
+    [ -d $_dfdir ] && rm -rf $_dfdir
     cd $HOME
-    git clone --bare git@github.com:kodx/dotfiles.git $DFDIR
-    local dotfiles="git --git-dir=$DFDIR --work-tree=$HOME"
+    git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir
+    local dotfiles="git --git-dir=$_dfdir --work-tree=$HOME"
     $dotfiles config --local status.showUntrackedFiles no
     $dotfiles checkout -f
     echo 'dotfiles install complete'
@@ -90,52 +117,64 @@ insdotfiles() {
 }
 
 getapp() {
-    if [ "$#" -lt 2 ]; then
-        return 1
-    fi
-    local GETOPT=''
-    if [ "$1" = 'curl' ]; then
-        GETOPT='-#L -o'
-    else
-        GETOPT='-q --hsts-file /dev/null -nv -N -O'
-    fi
-    local BINPATH="$HOME/bin"
-    local CMDPATH="$BINPATH/$(basename $2)"
-    mkdir -p $BINPATH
+    [ "$#" -lt 2 ] && return 1
+
+    local _bindir="$HOME/bin"
+    local _cmdpath="$_bindir/$(basename $2)"
+    mkdir -p $_bindir
+
+    local _getopt=''
+    case $(basename $1) in
+        curl)
+            _getopt='-#L -C - -o '$_cmdpath
+            ;;
+        wget)
+            _getopt='-q --hsts-file /dev/null -nv -N --show-progress -P '$_bindir
+            ;;
+        *)
+            echo 'get command $1 unknown, abort'
+            return 1
+            ;;
+    esac
+
     echo "downloading $2"
-    $1 $2 $GETOPT $CMDPATH
-    [ -f $CMDPATH ] && chmod u+rx $CMDPATH
+    $1 $2 $_getopt
+    [ -f $_cmdpath ] && chmod u+rx $_cmdpath
     return 0
 }
 
+# return first avialable command full path
 getcmd() {
-    local _retcmd=''
-    for e in 'wget curl'; do
-        [ $(command -v "$e") ] && [ "$_retcmd" = '' ] && _retcmd="$e"
+    for e in $@; do
+        $(command -v "$e" > /dev/null) && echo $(command -v "$e") && return 0
     done
-
-    echo $_retcmd
-    return 0
+    return 1
 }
+
 
 insapps() {
     echo 'installing applications ...'
-    local GETCMD=$(getcmd)
-    if [ -z $GETCMD ]; then
-        echo 'wget or curl not found, abort'
-        return
-    fi
-    # set urls to apps
+    local _getcmdlist='curl wget '
+    checkcmd 'basename mkdir chmod' $_getcmdlist || return 1
+
+    local _getcmd=$(getcmd $_getcmdlist)
+    # set apps urls
     local _mapps='
         https://yt-dl.org/downloads/latest/youtube-dl
         https://raw.githubusercontent.com/kodx/lightsOn/master/lightsOn.sh'
-    for e in $_mapps; do getapp $GETCMD $e; done
+
+    for e in $_mapps; do
+        getapp $_getcmd $e
+    done
 
     echo 'applications install complete'
     return 0
 }
 
 inscfgs() {
+    # exit if commands not found
+    checkcmd 'base64 gunzip' || return 1
+
     # gzip -c ~/.config/mc/panels.ini | base64
     local _mcpcfg='
 H4sICB2c7V0AA3BhbmVscy5pbmkA7dPNSgMxEAfw+zxF3qDa4qWQm0cR8VpKiJtJdzAfy8xsbcWH
@@ -233,11 +272,6 @@ XVv4SgfT65R+UQN/vtOoR9Vy/a1mov3aBdQX8vFvXmSpSqxhYP6hX3FhZptHXyOEXzqkdp1q/ajE
 0ytBDksQvQTpliBl8yuZaNlmy1uoK65TQFlEZgFS9J6gRUqQkspa/fxz7zYj1rfsFjL1R40zhB/m
 vDIV5bhfxhD0D2tRnTrUp/rR6tzkZzUP/0f8HMT3FUvRcSp/0EyfC7q+JHNwuHE8dDfEsa13uxoH
 B0wBVkQ4dC2QX/P8GwEKY/BkLQAA'
-    # exit if commands not found
-    local _cmds='base64 gzip gunzip'
-    for e in $_cmds; do
-        [ ! $(command -v "$e") ] && echo "cmd $e not found" && return 1
-    done
 
     local _mcpath=$HOME/.config/mc
     local _qbpath=$HOME/.config/qBittorrent
@@ -251,11 +285,12 @@ if [ $INSALL ] || $(test "$1" = 'insall'); then
     insdotfiles
     inscfgs
     insapps
+    fixgitlink
 else
     [ $INSDOTFILES ] || [ "$1" = 'insdotfiles' ] && insdotfiles
     [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
     [ $INSCFGS ] || [ "$1" = 'inscfgs' ] && inscfgs
+    [ $FIXLINK] || [ "$1" = 'fixlink' ] && fixgitlink
 fi
 
-unset insdotfiles insapps usage getapp getcmd inscfgs
-
+unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixgitlink
