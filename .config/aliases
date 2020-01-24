@@ -20,25 +20,23 @@ mozillavacuum() {
 
 # set alias if command present
 # usage:
-# $ aliasifpreset mcd mc '-d'
+# $ aliasifpresent mcd mc '-d'
 # sets "alias mcd='mc -d'" if mc command is present
 aliasifpresent() {
-    if [ "$#" -lt 2 ]; then
-        return
-    fi
-    $(! command -v "$2" > /dev/null) && return
-    
+    # if number of params lesser than 2
+    [ $# -lt 2 ] && return 1
+    # if command invalid
+    $(command -v "$2" > /dev/null) || return 1
+
     local aliascmd="$2"
     local aliasname="$1"
-    if [ "$#" -gt 2 ]; then
+    local opts=''
+    if [ $# -gt 2 ]; then
         shift 2
-        for arg in "$@"; do
-            aliascmd="$aliascmd $arg"
-        done
+        aliascmd="$aliascmd $@"
     fi
-    alias $aliasname="$aliascmd"
+    alias "$aliasname"="$aliascmd"
 }
-
 
 # make all ' ' '()' ',' '[]' '\' become '_'
 sanitizefiles() {
@@ -64,7 +62,7 @@ alias ..='cd ..' \
     ....='cd ../../..' \
     cd..='cd ..' \
     rm='rm -i' \
-	mkd='mkdir -pv' \
+    mkd='mkdir -pv' \
     p='pwd' \
     c='clear' \
     scr='screen -xRR' \
@@ -78,7 +76,7 @@ alias ..='cd ..' \
     e="$EDITOR" \
     se='sudoedit' \
     vd='vimdiff' \
-	f="$FILEMAN" \
+    f="$FILEMAN" \
     m='most' \
     q='exit' \
     psaux='ps auxfww | sed "s/^\(\w\+\s\+\)\(\w\+\)/\1\x1B[1;32m\2\x1B[0m/"' \
@@ -99,14 +97,17 @@ alias ..='cd ..' \
 # void linux package manager
 #alias pac='sudo vpm --color=yes'
 
+
 # debian based package manager
-alias pac='sudo aptitude' \
-    pacs='pac search' \
-    paci='pac install' \
-    pacd='pac purge' \
-    pacn='pac show' \
-    pacpurge-cached='pac purge \~c' \
-    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+if [ -f /etc/debian_version ]; then
+    alias pac='sudo aptitude' \
+        pacs='pac search' \
+        paci='pac install' \
+        pacd='pac purge' \
+        pacn='pac show' \
+        pacpurge-cached='pac purge \~c' \
+        pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+fi
 
 
 alias SS='sudo systemctl'
@@ -117,6 +118,7 @@ aliasifpresent showports ss '-lntu'
 aliasifpresent make colormake
 aliasifpresent diff colordiff
 aliasifpresent df pydf
+aliasifpresent fd fdfind
 aliasifpresent subl "$HOME/work/programs/sublime_text_3/sublime_text"
 aliasifpresent vscodium "$HOME/work/programs/vscodium/codium"
 aliasifpresent telegram "$HOME/work/programs/Telegram/Telegram"
