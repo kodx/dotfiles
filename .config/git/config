@@ -15,6 +15,7 @@
 	lg = log -p
 	llog = log --date=local
 	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short 
+    list = ls-tree -r master --name-only
 	who = shortlog -s --
 	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
