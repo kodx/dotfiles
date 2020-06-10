@@ -7,29 +7,17 @@ if !exists('s:loaded_my_vimrc')
 	" Don't reset twice on reloading - 'compatible' has SO many side effects.
 	set nocompatible  " to use many extensions of Vim.
 
-    " Create special directory for backup and swap
-    if finddir($HOME.'/.data/') == ''
-		silent call mkdir($HOME.'/.data/')
-    endif
-
-    if finddir($HOME.'/.data/backup') == ''
-        silent call mkdir($HOME.'/.data/backup')
-    endif
     set backup                  " make backup file and leave it around 
-    set backupdir=$HOME/.data/backup    " where to put backup file 
     set backupskip&
     set backupskip+=svn-commit.tmp,svn-commit.[0-9]*.tmp
+    
+    set viminfo+='1000,n$HOME/.cache/vim/viminfo
+    set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
+    set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0700)
+    set viewdir=$HOME/.cache/vim/view     | call mkdir(&viewdir, 'p', 0700)
+    set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
 
-    if finddir($HOME.'/.data/swap') == ''
-        silent call mkdir($HOME.'/.data/swap')
-    endif
-    set directory=$HOME/.data/swap      " where to put swap file 
-
-    if finddir($HOME.'/.data/sessions') == ''
-        silent call mkdir($HOME.'/.data/sessions')
-    endif
-    let g:session_dir = $HOME.'/.data/sessions'
-    let g:netrw_home=$HOME.'/.data'
+    set runtimepath=$XDG_CONFIG_HOME/vim,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
 endif
 
 set hidden                  " не требовать сохранения буфера
@@ -146,8 +134,8 @@ if &t_Co > 2
   set hlsearch
   colorscheme desert
   "colorscheme vjp
-  hi pmenu	ctermbg=darkcyan ctermfg=white
-  hi pmenusel	ctermbg=red      ctermfg=white
+  "hi pmenu	ctermbg=darkcyan ctermfg=white
+  "hi pmenusel	ctermbg=red      ctermfg=white
 endif
 
 

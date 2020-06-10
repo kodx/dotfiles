@@ -52,16 +52,20 @@ runonce() {
     fi
 }
 
+cdd() { 
+    [ -z "$1" ] && cd && return 0
+    for i in $(seq 1 1 "$1"); do 
+        cd ..
+    done
+    return 0
+}
+
 if kxwhich dircolors; then
     test -r $HOME/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     LSOPTS='--color=auto'
 fi
 
-alias ..='cd ..' \
-    ...='cd ../..' \
-    ....='cd ../../..' \
-    cd..='cd ..' \
-    rm='rm -i' \
+alias rm='rm -i' \
     mkd='mkdir -pv' \
     p='pwd' \
     c='clear' \
@@ -77,28 +81,27 @@ alias ..='cd ..' \
     se='sudoedit' \
     vd='vimdiff' \
     f="$FILEMAN" \
-    m='most' \
     q='exit' \
     psaux='ps auxfww | sed "s/^\(\w\+\s\+\)\(\w\+\)/\1\x1B[1;32m\2\x1B[0m/"' \
     ls="ls $LS_OPTIONS $LSOPTS -hN --group-directories-first" \
-    l1="ls $LS_OPTIONS -1 --sort version" \
-    la="ls $LS_OPTIONS -A --sort version" \
-    ll="ls $LS_OPTIONS -lh --sort version" \
+    l1="ls -1 --sort version" \
+    la="ls -Aal --sort version" \
+    ll="ls -lh --sort version" \
     grep='grep --color=auto' \
     fgrep='fgrep --color=auto' \
     egrep='egrep --color=auto' \
-    encaru='enca -L ru -x utf8' \
     mem='free -h' \
     dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$PWD" \
     yt="youtube-dl --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
     yta='yt -x -f bestaudio/best' \
-    mpva='mpv -vo null --no-audio-display'
+    mpva='mpv -vo null --no-audio-display' \
+    mpvf='mpv --ytdl-format="bestvideo[height<=?720]+bestaudio/best"'
+
 
 # void linux package manager
 #alias pac='sudo vpm --color=yes'
 
-
-# debian based package manager
+# debian package manager
 if [ -f /etc/debian_version ]; then
     alias pac='sudo aptitude' \
         pacs='pac search' \
@@ -119,9 +122,11 @@ aliasifpresent make colormake
 aliasifpresent diff colordiff
 aliasifpresent df pydf
 aliasifpresent fd fdfind
-aliasifpresent subl "$HOME/work/programs/sublime_text_3/sublime_text"
-aliasifpresent vscodium "$HOME/work/programs/vscodium/codium"
-aliasifpresent telegram "$HOME/work/programs/Telegram/Telegram"
-aliasifpresent pyradio $HOME/bin/pyradio/pyradio $HOME/bin/pyradio/stations.csv
+aliasifpresent m most
+aliasifpresent encaru enca '-L ru -x utf8'
+aliasifpresent subl "$HOME"/work/programs/sublime_text_3/sublime_text
+aliasifpresent vscodium "$HOME"/work/programs/vscodium/codium
+aliasifpresent telegram "$HOME"/work/programs/Telegram/Telegram
+aliasifpresent pyradio "$HOME"/.local/bin/pyradio/pyradio "$HOME"/.local/bin/pyradio/stations.csv
 
 unset aliasifpresent

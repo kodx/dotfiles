@@ -13,9 +13,26 @@ pathadd() {
     esac
 }
 
-pathadd "$HOME/.local/bin"
-pathadd "$HOME/.cargo/bin"
-pathadd "$HOME/bin"
+pathadd "$HOME"/.local/bin
+pathadd "$HOME"/.cargo/bin
+pathadd "$HOME"/work/dev/rust/cargo/bin
+pathadd "$HOME"/bin
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
+export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
+export LESSHISTFILE=-
+export SCREENRC="$XDG_CONFIG_HOME"/screen/screenrc
+export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvtd
+export URXVT_PERL_LIB="$URXVT_PERL_LIB":"$HOME"/.local/share/urxvt/ext
+export KDEHOME="$XDG_CONFIG_HOME"/kde
+export ELINKS_CONFDIR="$XDG_CONFIG_HOME"/elinks
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv/ComputeCache
+export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"/nv/GLCache
+export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+
 export EDITOR='vim'
 export TERMINAL='urxvtc'
 export BROWSER='firefox'
@@ -26,7 +43,13 @@ export TASKMAN='xfce4-taskmanager'
 #export MOZ_DISABLE_PANGO=1
 export SDL_AUDIODRIVER='pulse'
 
+#export VIMINIT='source "$XDG_CONFIG_HOME/vim/vimrc"'
+export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+
 export LESS=-R
+
+export CARGO_HOME=$HOME/work/dev/rust/cargo 
+export RUSTUP_HOME=$HOME/work/dev/rust/rustup
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

@@ -7,14 +7,20 @@
 # Author: kodx <kodx.org>
 
 # shell variables
-[ -f "$HOME/.config/shvars" ] && . "$HOME/.config/shvars"
+[ -f "$HOME/.config/envars" ] && . "$HOME/.config/envars"
 
-# shell aliases is shell is interactive
+# shell aliases if shell is interactive
 case $- in
     *i*)
         [ -f "$HOME/.config/aliases" ] && . "$HOME/.config/aliases"
         ;;
 esac
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+fi
 
 # Start graphical server if i3 not already running.
 # [ "$(tty)" = "/dev/tty1" ] && ! pgrep -x i3 >/dev/null && exec startx

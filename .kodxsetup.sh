@@ -3,9 +3,9 @@
 # Author: kodx <kodx.org>
 
 : <<'INSTALL'
-wget --hsts-file /dev/null --no-check-certificate -qO- https://raw.githubusercontent.com/kodx/dotfiles/master/.kodxsetup.sh | INSALL=1 sh
+wget --hsts-file /dev/null --no-check-certificate -qO- https://raw.githubusercontent.com/kodx/dotfiles/master/.kodxsetup.sh | INSTALL=1 sh
 or
-curl -fsSL https://raw.githubusercontent.com/kodx/dotfiles/master/.kodxsetup.sh | INSALL=1 sh
+curl -fsSL https://raw.githubusercontent.com/kodx/dotfiles/master/.kodxsetup.sh | INSTALL=1 sh
 INSTALL
 
 # ---------------------------------------------------------------
@@ -41,40 +41,45 @@ USAGE
 
 usage() {
     cat <<EOM
-    kodx dotfiles setup
-    Usage:
+kodx dotfiles setup
+Usage:
 
-    install dotfiles and applications
-    $ INSALL=1 $0
-    or
-    $ $0 insall
+install dotfiles and applications, create dirs and fix git link
+$ INSTALL=1 $0
+or
+$ $0 install
 
-    install dotfiles
-    $ INSDOTFILES=1 $0
-    or
-    $ $0 insdotfiles
+install dotfiles
+$ INSDOTFILES=1 $0
+or
+$ $0 insdotfiles
 
-    install apps
-    $ INSAPPS=1 $0
-    or
-    $ $0 insapps
+install apps
+$ INSAPPS=1 $0
+or
+$ $0 insapps
 
-    install static configs
-    $ INSCFGS=1 $0
-    or
-    $ $0 inscfgs
+install static configs
+$ INSCFGS=1 $0
+or
+$ $0 inscfgs
 
-    fix git config link to ssh
-    $ FIXLINK=1 $0
-    or
-    $ $0 fixlink
+create user dirs 
+$ MAKEDIRS=1 $0
+or
+$ $0 makedirs
+
+fix git config link to ssh
+$ FIXLINK=1 $0
+or
+$ $0 fixlink
 EOM
 }
 
-if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSALL ] && [ ! $INSCFGS ] && [ ! $FIXLINK] ; then
+if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSTALL ] && [ ! $INSCFGS ] && [ ! $FIXLINK ] && [ ! $MAKEDIRS ] ; then
     usage
     unset usage
-    return 0
+    return 1
 fi
 
 # check is commands present
@@ -108,12 +113,17 @@ insdotfiles() {
     local _dfdir="$HOME/.dotfiles"
     [ -d $_dfdir ] && rm -rf $_dfdir
     cd $HOME
-    git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir
-    local dotfiles="git --git-dir=$_dfdir --work-tree=$HOME"
-    $dotfiles config --local status.showUntrackedFiles no
-    $dotfiles checkout -f
-    echo 'dotfiles install complete'
-    return 0
+    if [ ! $(git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir) ]; then
+        local dotfiles="git --git-dir=$_dfdir --work-tree=$HOME"
+        $dotfiles config --local status.showUntrackedFiles no
+        $dotfiles checkout -f
+        echo 'dotfiles install complete'
+        return 0
+    else
+        echo "git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir failed!"
+        return 0
+    fi
+    echo 'installing dotfiles complete'
 }
 
 getapp() {
@@ -281,16 +291,35 @@ B0wBVkQ4dC2QX/P8GwEKY/BkLQAA'
     return 0
 }
 
-if [ $INSALL ] || $(test "$1" = 'insall'); then
+makedirs() {
+    echo 'creating directories...'
+    local _dirlist='
+        desktop
+        docs
+        docs/share
+        docs/templates
+        download
+        work
+    '
+    for e in "$_dirlist"; do
+        mkdir -pv $e
+    done
+    echo 'creating directories complete'
+    return 0
+}
+
+if [ $INSTALL ] || $(test "$1" = 'install'); then
     insdotfiles
     inscfgs
     insapps
+    makedirs
     fixgitlink
 else
     [ $INSDOTFILES ] || [ "$1" = 'insdotfiles' ] && insdotfiles
     [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
     [ $INSCFGS ] || [ "$1" = 'inscfgs' ] && inscfgs
     [ $FIXLINK] || [ "$1" = 'fixlink' ] && fixgitlink
+    [ $MAKEDIRS] || [ "$1" = 'makedirs' ] && makedirs
 fi
 
-unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixgitlink
+unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixgitlink makedirs
