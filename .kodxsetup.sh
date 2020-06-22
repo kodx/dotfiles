@@ -129,7 +129,7 @@ insdotfiles() {
 getapp() {
     [ "$#" -lt 2 ] && return 1
 
-    local _bindir="$HOME/bin"
+    local _bindir="$HOME/.local/bin"
     local _cmdpath="$_bindir/$(basename $2)"
     mkdir -p $_bindir
 
