@@ -1,40 +1,39 @@
 [user]
-	name = Yegor Bayev
-	email = kodxpub@gmail.com
-[alias] 
-	st = status
-	s = status --short
+    name = Yegor Bayev
+    email = kodxpub@gmail.com
+[alias]
+    st = status
+    s = status --short
     au = add -u
-	ci = commit -a
-	cm = commit -m
-	cma = commit -a -m
-	br = branch
-	co = checkout
-	w = whatchanged
-	df = diff
-	lg = log -p
-    l = log --graph --oneline --decorate
-    ll = log --graph --oneline --decorate --branches --tags
-    lll = log --graph --oneline --decorate --all	
-	llog = log --date=local
-	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short 
+    ca = commit -a
+    cm = commit -m
+    cma = commit -a -m
+    br = branch
+    co = checkout
+    w = whatchanged
+    df = diff
+    lg = log -p
+    l = log --decorate --pretty=format:'%C(auto)%h%C(auto) %C(auto,cyan)(%cd)%Creset %s %C(auto)%d%C(auto) %C(auto,magenta)[%an]%C(auto)' --date='format:%Y-%m-%d %H:%M'
+    ll = l --graph --branches --tags
+    lll = l --graph --all
+    llog = log --date=local
     list = ls-tree -r master --name-only
-	who = shortlog -s --
-	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
-	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-	pub = "!f() { git push -u ${1:-origin} $(git symbolic-ref HEAD); }; f"
-	pullf = "!sh -c 'git fetch --all; git reset --hard origin/master'"
-	up = pull --rebase
-	put = push origin HEAD
+    who = shortlog -s --
+    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    pub = "!f() { git push -u ${1:-origin} $(git symbolic-ref HEAD); }; f"
+    pullf = "!sh -c 'git fetch --all; git reset --hard origin/master'"
+    up = pull --rebase
+    put = push origin HEAD
 [github]
-	user = kodx
+    user = kodx
 [core]
-	autocrlf = input
+    autocrlf = input
 [color]
-	ui = auto
-	diff = auto
-	status = auto
+    ui = auto
+    diff = auto
+    status = auto
 [push]
-	default = simple
+    default = simple
 [grep]
-	lineNumber = true
+    lineNumber = true
