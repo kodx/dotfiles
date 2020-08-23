@@ -13,6 +13,9 @@
 	w = whatchanged
 	df = diff
 	lg = log -p
+    l = log --graph --oneline --decorate
+    ll = log --graph --oneline --decorate --branches --tags
+    lll = log --graph --oneline --decorate --all	
 	llog = log --date=local
 	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short 
     list = ls-tree -r master --name-only
