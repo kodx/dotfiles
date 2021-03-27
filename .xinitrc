@@ -7,3 +7,6 @@
 #exec $HOME/bin/dwm 
 #exec /usr/bin/openbox-session
 #exec /usr/bin/startlxqt
+#exec dbus-launch --exit-with-session /usr/bin/spectrwm
+/usr/bin/spectrwm
+

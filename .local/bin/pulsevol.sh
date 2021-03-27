@@ -5,7 +5,9 @@
 VOLSTEP=2%
 # set ports
 # use this command to show available ports:
-# pacmd list-sinks | awk '/* index:/{f=1;next} /index:/{f=0} f' | awk '/ports:/{f=1;next} /active port:/{f=0} f'
+# pacmd list-sinks | gawk '/* index:/{f=1;next} /index:/{f=0} f' | gawk '/ports:/{f=1;next} /active port:/{f=0} f'
+# or
+# pacmd list-sinks | sed '/* index:/,/index:/!d;/active port:/!d;s/^\s*.*:\s<\([a-z-]*\)>/\1/'
 OUTLINE='analog-output-lineout'
 OUTPHONES='analog-output-headphones'
 
@@ -29,7 +31,8 @@ if [ $# -ne 1 ] ; then
 fi
 
 getport() {
-    activeport=$(pacmd list-sinks | awk '/* index:/{f=1;next} /index:/{f=0} f' | awk '/active port:/ { print $3 }' | tr -d '<>')
+    #activeport=$(pacmd list-sinks | awk '/* index:/{f=1;next} /index:/{f=0} f' | awk '/active port:/ { print $3 }' | tr -d '<>')
+    activeport=$(pacmd list-sinks | sed '/* index:/,/index:/!d;/active port:/!d;s/^\s*.*:\s<\([a-z-]*\)>/\1/')
     if [ $activeport = "$OUTLINE" ]; then
         echo $OUTPHONES
     else 

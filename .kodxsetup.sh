@@ -94,7 +94,7 @@ checkcmd() {
 }
 
 # change git link in config to ssh connection
-fixgitlink() {
+fixlink() {
     echo 'fixing git config link...'
     local _cfgpath="$HOME/.dotfiles/config"
     if [ ! -e $_cfgpath ]; then
@@ -164,10 +164,10 @@ getcmd() {
 
 insapps() {
     echo 'installing applications ...'
-    local _getcmdlist='curl wget '
-    checkcmd 'basename mkdir chmod' $_getcmdlist || return 1
+    local _getcmd=$(getcmd 'curl wget')
+    [ $? -eq 0 ] || return 1
+    checkcmd "basename mkdir chmod $_getcmd" || return 1
 
-    local _getcmd=$(getcmd $_getcmdlist)
     # set apps urls
     local _mapps='
         https://yt-dl.org/downloads/latest/youtube-dl
@@ -313,13 +313,13 @@ if [ $INSTALL ] || $(test "$1" = 'install'); then
     inscfgs
     insapps
     makedirs
-    fixgitlink
+    fixlink
 else
     [ $INSDOTFILES ] || [ "$1" = 'insdotfiles' ] && insdotfiles
     [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
     [ $INSCFGS ] || [ "$1" = 'inscfgs' ] && inscfgs
-    [ $FIXLINK] || [ "$1" = 'fixlink' ] && fixgitlink
+    [ $FIXLINK] || [ "$1" = 'fixlink' ] && fixlink
     [ $MAKEDIRS] || [ "$1" = 'makedirs' ] && makedirs
 fi
 
-unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixgitlink makedirs
+unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixlink makedirs

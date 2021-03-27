@@ -165,7 +165,10 @@ URxvt.cursorColor:          t_cursor
 !URxvt.font:                 xft:Monospace:size=12
 !URxvt.font:                 xft:Fira Code Medium:size=11,xft:Noto Emoji,xft:Icons,xft:Symbola,xft:PowerlineSymbols
 !URxvt.font:                 xft:Fira Code Medium:size=11,xft:Noto Emoji:size=11
-URxvt.font:                 xft:Fira Code Medium:size=11
+!URxvt.font:                 xft:Fira Code Medium:size=11
+!URxvt.font:                 xft:FiraCode Nerd Font:style=Medium:size=11,xft:Noto Emoji,xft:Icons,xft:Symbola,xft:PowerlineSymbols
+URxvt.font:                 xft:FiraCode Nerd Font:style=Medium:size=11
+
 URxvt.letterSpace:         -1
 
 !URxvt.termName:                 rxvt
