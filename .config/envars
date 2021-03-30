@@ -15,7 +15,7 @@ pathadd() {
 
 pathadd "$HOME"/.local/bin
 pathadd "$HOME"/.cargo/bin
-pathadd "$HOME"/work/dev/rust/cargo/bin
+pathadd "$HOME"/work/rust/cargo/bin
 pathadd "$HOME"/bin
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -35,7 +35,7 @@ export GNUPGHOME="$XDG_DATA_HOME"/gnupg
 
 export EDITOR='vim'
 export TERMINAL='urxvtc'
-export BROWSER='librewolf'
+export BROWSER='x-www-browser'
 export READER='zathura'
 export FILEMAN='pcmanfm-qt'
 export TASKMAN='xfce4-taskmanager'
@@ -43,17 +43,16 @@ export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc-2.0"
 #export MOZ_DISABLE_PANGO=1
 export SDL_AUDIODRIVER='pulse'
 
-#export VIMINIT='source "$XDG_CONFIG_HOME/vim/vimrc"'
 export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 #export VIMINIT='source "$XDG_CONFIG_HOME/vim/vimrc"'
 
-export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_PLATFORM_PLUGIN=qt5ct
+#export QT_QPA_PLATFORMTHEME=qt5ct
+#export QT_PLATFORM_PLUGIN=qt5ct
 
 export LESS=-R
 
-export CARGO_HOME=$HOME/work/dev/rust/cargo 
-export RUSTUP_HOME=$HOME/work/dev/rust/rustup
+export CARGO_HOME=$HOME/work/rust/cargo 
+export RUSTUP_HOME=$HOME/work/rust/rustup
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

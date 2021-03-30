@@ -1,3 +1,6 @@
+super + shift + q
+    obsession-logout
+
 {control + alt + t, super + shift + Return}
     $TERMINAL
 
@@ -29,7 +32,7 @@ super + control + h
 	pulsevol.sh swport
 
 control + alt + p
-    firefox -no-remote -private-window -P proxied
+    $BROWSER -no-remote -private-window -P proxied
 
 control + alt + b
-    firefox -no-remote -P default
+    $BROWSER -no-remote -P default
