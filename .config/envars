@@ -15,12 +15,16 @@ pathadd() {
 
 pathadd "$HOME"/.local/bin
 pathadd "$HOME"/.cargo/bin
-pathadd "$HOME"/work/rust/cargo/bin
 pathadd "$HOME"/bin
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
+# vscode
+export VSCODE_APPDATA="$XDG_DATA_HOME"/vscode/appdata
+export VSCODE_EXTENSIONS="$XDG_DATA_HOME"/vscode/extensions
+export VSCODE_LOGS=/tmp/vscode-"$USER"
 
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
 export LESSHISTFILE=-
@@ -39,7 +43,7 @@ export BROWSER='x-www-browser'
 export READER='zathura'
 export FILEMAN='pcmanfm-qt'
 export TASKMAN='xfce4-taskmanager'
-export GTK2_RC_FILES="$HOME/.config/gtk-2.0/gtkrc-2.0"
+export GTK2_RC_FILES="$HOME"/.config/gtk-2.0/gtkrc-2.0
 #export MOZ_DISABLE_PANGO=1
 export SDL_AUDIODRIVER='pulse'
 
@@ -51,8 +55,10 @@ export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
 
 export LESS=-R
 
-export CARGO_HOME=$HOME/work/rust/cargo 
-export RUSTUP_HOME=$HOME/work/rust/rustup
+RUST_TOOLCHAIN_PATH="$HOME"/work/programs/rust
+export CARGO_HOME="$RUST_TOOLCHAIN_PATH"/cargo
+export RUSTUP_HOME="$RUST_TOOLCHAIN_PATH"/rustup
+pathadd "$CARGO_HOME"/bin
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -61,8 +67,8 @@ export RUSTUP_HOME=$HOME/work/rust/rustup
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # gPodder settings
-export GPODDER_HOME=$HOME/.gPodder
-export GPODDER_DOWNLOAD_DIR=$HOME/download/podcast
+export GPODDER_HOME="$HOME"/.gPodder
+export GPODDER_DOWNLOAD_DIR="$HOME"/download/podcast
 
 # quick cd to underlying dirs
 export CDPATH=:..:~:~/work/dev:~/work/projects
