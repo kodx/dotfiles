@@ -1,5 +1,5 @@
 ENTRY "~/download/torrent" URL "/home/kodx/download/torrent"
-ENTRY "/media/kodx" URL "/media/kodx"
+ENTRY "/run/media/kodx" URL "/run/media/kodx"
 ENTRY "/mnt/usrdata/kodx" URL "/mnt/usrdata/kodx"
 ENTRY "/mnt/data/mmedia/music" URL "/mnt/data/mmedia/music"
 ENTRY "/home/kodx/work/projects" URL "/home/kodx/work/projects"

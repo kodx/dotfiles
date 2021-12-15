@@ -71,6 +71,7 @@ export GPODDER_HOME="$HOME"/.gPodder
 export GPODDER_DOWNLOAD_DIR="$HOME"/download/podcast
 
 # quick cd to underlying dirs
-export CDPATH=:..:~:~/work/dev:~/work/projects
+export CDPATH=:..:~:~/work:~/work/dev:~/work/projects
+
 
 unset pathadd

@@ -95,11 +95,46 @@ alias rm='rm -i' \
     yt="youtube-dl --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
     yta='yt -x -f bestaudio/best' \
     mpva='mpv -vo null --no-audio-display' \
-    mpvf='mpv --ytdl-format="bestvideo[height<=?720]+bestaudio/best"'
+    mpvf='mpv --ytdl-format="bestvideo[height<=?720]+bestaudio/best"' \
+    screencapture="ffmpeg -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 ~/scrvid-$(date +%Y-%m-%d_%H-%M).mp4" \
+    screencapture_audio="ffmpeg -thread_queue_size 512 -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 -f pulse -ac 2 -i default ~/scrvid-audio-$(date +%Y-%m-%d_%H-%M).mp4" 
 
+
+
+#if [ $(command -v 'exa') > /dev/null ]; then
+if kxwhich 'exa'; then
+    unalias 'll' 'l1' 'la' 'l' > /dev/null 2>&1
+    alias l='exa -Gg --icons --group-directories-first -F'
+    alias ll='COLUMNS=1 l -l'
+    alias la='COLUMNS=1 l -la'
+    alias l1='l -1'
+fi
+
+if kxwhich 'bat'; then
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+    #alias batdiff='git diff --name-only --diff-filter=d | xargs bat --diff'
+fi
+
+if kxwhich 'zoxide'; then
+    eval "$(zoxide init bash)"
+fi
 
 # void linux package manager
 #alias pac='sudo vpm --color=yes'
+
+if [ -f /etc/os-release ]; then
+    case $(cat /etc/os-release | grep '^ID=' | tr -d 'ID=' || 'Unknown') in
+        'manjaro')
+            alias pac='sudo pacman' \
+                pacs='pac -Ss' \
+                paci='pac -S' \
+                pacd='pac -Rcs' \
+                pacn='pac -Si'
+            ;;
+        *)
+            ;;
+    esac
+fi
 
 # debian package manager
 if [ -f /etc/debian_version ]; then
