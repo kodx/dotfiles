@@ -36,6 +36,7 @@ export ELINKS_CONFDIR="$XDG_CONFIG_HOME"/elinks
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv/ComputeCache
 export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"/nv/GLCache
 export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
 
 export EDITOR='vim'
 export TERMINAL='urxvtc'
