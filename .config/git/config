@@ -28,7 +28,7 @@
 [github]
     user = kodx
 [core]
-    autocrlf = input
+    #autocrlf = input
 [color]
     ui = auto
     diff = auto
