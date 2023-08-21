@@ -119,34 +119,38 @@ if kxwhich 'zoxide'; then
     eval "$(zoxide init bash)"
 fi
 
-# void linux package manager
-#alias pac='sudo vpm --color=yes'
+if kxwhich 'lsb_release'; then
+    case "$(lsb_release -is)" in
+        'ManjaroLinux' | 'Arch')
+            if kxwhich 'yay'; then
+                alias pac='yay'
+            else
+                alias pac='sudo pacman'
+            fi
 
-if [ -f /etc/os-release ]; then
-    case $(cat /etc/os-release | grep '^ID=' | tr -d 'ID=' || 'Unknown') in
-        'manjaro')
-            alias pac='sudo pacman' \
-                pacs='pac -Ss' \
+            alias pacs='pac -Ss' \
                 paci='pac -S' \
                 pacd='pac -Rcs' \
                 pacn='pac -Si'
+            ;;
+        'Debian')
+            if kxwhich 'aptitude'; then
+                alias pac='sudo aptitude'
+                alias pacpurge-cached='pac purge \~c' \
+                    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+            else
+                alias pac='sudo apt'
+            fi
+
+            alias pacs='pac search' \
+                paci='pac install' \
+                pacd='pac purge' \
+                pacn='pac show'
             ;;
         *)
             ;;
     esac
 fi
-
-# debian package manager
-if [ -f /etc/debian_version ]; then
-    alias pac='sudo aptitude' \
-        pacs='pac search' \
-        paci='pac install' \
-        pacd='pac purge' \
-        pacn='pac show' \
-        pacpurge-cached='pac purge \~c' \
-        pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
-fi
-
 
 alias SS='sudo systemctl'
 
