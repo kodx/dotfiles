@@ -1,0 +1,30 @@
+[Desktop Action new-private-window]
+Exec=/usr/bin/chromium --incognito
+Name[ru_RU]=Новое окно в режиме инкогнито
+Name=New Incognito Window
+
+[Desktop Action new-window]
+Exec=/usr/bin/chromium
+Name[ru_RU]=Новое окно
+Name=New Window
+
+[Desktop Entry]
+Actions=new-window;new-private-window;
+Categories=Network;WebBrowser;
+Comment[ru_RU]=Доступ в Интернет
+Comment=Доступ в Интернет
+Exec=/usr/bin/chromium -disable-webgl %U
+GenericName[ru_RU]=Веб-браузер
+GenericName=Веб-браузер
+Icon=chromium
+MimeType=text/html;image/webp;image/png;image/jpeg;image/gif;application/xml;application/xml;application/xhtml+xml;application/rss+xml;application/rdf+xml;application/pdf;
+Name[ru_RU]=Chromium NoWebgl
+Name=Chromium NoWebgl
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.0
+X-KDE-SubstituteUID=false
+X-KDE-Username=
