@@ -1,0 +1,266 @@
+# $Id: screenrc,v 1.15 2003/10/08 11:39:03 zal Exp $
+#
+# /etc/screenrc
+#
+#   This is the system wide screenrc.
+#
+#   You can use this file to change the default behavior of screen system wide
+#   or copy it to ~/.screenrc and use it as a starting point for your own
+#   settings.
+#
+#   Commands in this file are used to set options, bind screen functions to
+#   keys, redefine terminal capabilities, and to automatically establish one or
+#   more windows at the beginning of your screen session.
+#
+#   This is not a comprehensive list of options, look at the screen manual for
+#   details on everything that you can put in this file.
+#
+
+# ------------------------------------------------------------------------------
+# SCREEN SETTINGS
+# ------------------------------------------------------------------------------
+
+# включаем utf8
+defutf8 on
+# настройка режим управления потоком окна.
+defflow off
+# включает login-режим (для обновления /var/run/utmp)
+deflogin on
+# отключаем режим нетхака, если стану фатаном этого развлечения, может и включю
+nethack off
+
+# выключаем визуальный звонок
+vbell off
+# сообщение для (visual bell)
+vbell_msg "vbell %n"
+# сообщение если в фоновом окне bell character, ^G
+#bell_msg "Bell %n"
+bell_msg ""
+# сообщение если есть активность в наблюдаемом окне
+#activity "Activity on %n"
+activity ""
+# собственно включаем монитор активности, если off то включается командой ^a M
+defmonitor on
+# количество сохраненных строк
+defscrollback 10000
+# при копировании строки будут разделяться символами CR — LF
+crlf off
+# нахрен нам страница приветсвия
+startup_message off
+# цвет фона при очистке, кстати имя терминала тоже меняется
+# поэтому настройку клавиатуры zsh надо проводить отдельно
+defbce on
+# по умолчанию детатчится при разрыве связи с терминалом
+# для работы по ssh самое оно
+autodetach on
+# поддержка alternate screen, типо отчистка экрана при выходе из манов и пр.
+altscreen on
+# как же мы без скринсейвера
+#idle 30 eval "screen cmatrix -f -o -u 10" "idle 0"
+# имя файла для чтения и записи буфера обмена, по дефолту пишет
+# в /tmp/screen-exchange
+bufferfile ~/.screen_exchange
+# устанавливаем значения оболчки из переменных серды
+shell $SHELL
+msgwait 1
+
+
+# ------------------------------------------------------------------------------
+# SCREEN SHARE
+# ------------------------------------------------------------------------------
+
+multiuser on
+# acladd username
+
+
+# ------------------------------------------------------------------------------
+# SCREEN KEYBINDINGS
+# ------------------------------------------------------------------------------
+
+# вешаем ^a + на увеличение окон на 3 и ^a - на уменьшение на 1
+#bind + resize +3
+#bind - resize -1
+
+# Remove some stupid / dangerous key bindings
+#bind ^k
+#bind ^s
+#bind L
+#bind ^\
+# Make them better
+#bind \\ quit
+#bind K kill
+#bind I login on
+#bind O login off
+#bind } history
+
+# Bind shift right/left to next/prev
+# Shift + Left\Right переключает вкладки
+#bindkey -k  "%i"    next
+#bindkey -k  "#4"    prev
+#bindkey "^[Od" prev  # change window with ctrl-left
+#bindkey "^[Oc" next  # change window with ctrl-right
+#bindkey ^[[d prev # shift+left
+#bindkey ^[[c next # shift+right
+#bindkey ^[[a title
+#bindkey ^[[b screen 1
+
+
+
+term screen-256color
+terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+
+# New window and set title.
+#bindkey     "^N"    screen
+#bindkey     "^T"    title
+
+#change escape keystroke to Ctrl+` (Ctrl+Backtick)
+#escape ^``
+escape ^pp
+
+# shift+left - prev pane
+bindkey ^[[d prev
+# shift+right - next pane
+bindkey ^[[c next
+
+
+# fix backspace bug
+#bindkey -d -k kb stuff \010
+
+# An example of a "screen scraper" which will launch urlview on the current
+# screen window
+#
+#bind ^B eval "hardcopy_append off" "hardcopy -h $HOME/.screen-urlview" "screen urlview $HOME/.screen-urlview"
+
+# ------------------------------------------------------------------------------
+# TERMINAL SETTINGS
+# ------------------------------------------------------------------------------
+
+# The vt100 description does not mention "dl". *sigh*
+#termcapinfo vt100 dl=5\E[M
+
+# turn sending of screen messages to hardstatus off
+#hardstatus off
+# Set the hardstatus prop on gui terms to set the titlebar/icon title
+#termcapinfo xterm*|rxvt*|kterm*|Eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007
+
+# make emacs use 256 colours under Gnu Screen
+#term xterm-256color
+#term screen-256color
+#term rxvt-256color
+#term screen-16color-bce
+#termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+#term screen-16color-bce
+#term rxvt-16color
+
+# use this for the hard status string
+#Hardstatus string "%h%? users: %u%?"
+
+# An alternative hardstatus to display a bar at the bottom listing the
+# windownames and highlighting the current windowname in blue. (This is only
+# enabled if there is no hardstatus setting for your terminal)
+#
+#hardstatus lastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
+
+# set these terminals up to be 'optimal' instead of vt100
+#termcapinfo xterm*|linux*|rxvt*|Eterm* OP
+
+# Change the xterm initialization string from is2=\E[!p\E[?3;4l\E[4l\E>
+# (This fixes the "Aborted because of window size change" konsole symptoms found
+#  in bug #134198)
+#termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+
+# To get screen to add lines to xterm's scrollback buffer, uncomment the
+# following termcapinfo line which tells xterm to use the normal screen buffer
+# (which has scrollback), not the alternate screen buffer.
+#
+#termcapinfo xterm|xterms|xs|rxvt ti@:te@
+#termcapinfo rxvt-unicode ti@:te@     #enable SHIFT-PGUP / SHIFT-PGDOWN scroll
+
+
+# Enable non-blocking mode to better cope with flaky ssh connections.
+defnonblock 5
+
+
+# Here comes the pain...
+#backtick 1 0 0 $HOME/.screen/netinfo 120 wlan0
+#backtick 2 15 15 $HOME/.screen/batinfo
+#backtick 3 15 15 $HOME/.screen/cpuinfo
+#backtick 4 15 15 $HOME/.screen/meminfo
+
+#caption always "%{=bu kb} %=< %?%-Lw%?%{kc}[:%n %t:]%{kb}%?%+Lw%? >%= "
+#caption always "%{=bu} %=< %?%-Lw%?%{kc}[:%n %t:]%{kb}%?%+Lw%? >%= "
+#caption always ' %{-b dd}%-w%{cd}%n* %t%{-}%+w %{cd}%-=(%l) %d/%m %c%{-} '
+#caption always "%{= kc}%?%-Lw%?%{= kY}%n*%f %t%?(%u)%?%{= kc}%?%+Lw%?"
+#caption always '%{= wb}%50=%n%f %t%{= wb}'
+#caption always "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
+
+
+# caption always "%{=b kb} %=< %-Lw%{= BW}%50>%n%f* %t%{-}%+Lw >%="
+
+
+
+#hardstatus off
+#hardstatus string "%H - %n:%t%? - %h%?"
+#hardstatus alwayslastline "%H - %n:%t%? - %h%?"
+#hardstatus alwayslastline "%n:%h%?"  #this is window number, login@hostname, and current directory
+#hardstatus alwayslastline "%w%n:%h%?"  #this is window number, login@hostname, and current directory
+#hardstatus alwayslastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<"
+#hardstatus alwayslastline "%-Lw%{= BW}%50>%n%f* %h%?%{-}%+Lw%<"
+
+#hardstatus alwayslastline "%{+b bw}[%H :: $USER]%{=b kw} %=[[ %1` | %2` | %3` | %4` ]]%=%{=b bw}[%m.%d.%Y %0c%a]"
+#hardstatus alwayslastline "%{+b bw}[%H :: $USER]%{=b kw} %=[bat: %2`]%=%{=b bw}[%m.%d.%Y %0c]"
+
+# hardstatus alwayslastline "[%H :: $USER] %=[bat: %2`] %=[%d.%m.%Y %0c]"
+# hardstatus alwayslastline "[%H :: $USER] %=[%d.%m.%Y %0c]"
+
+# hardstatus alwayslastline "%{=b .d}[%H :: $USER] %=< %-Lw%{= bW}|%n|%{-}%+Lw >%=[bat: %2`] [%d.%m.%Y %0c]%{-}"
+
+# hardstatus alwayslastline "%{=b .d}[%H :: $USER] %=< %-w%{+b w}%n%{-b w}%+w>%=[bat: %2`] [%d.%m.%Y %0c]%{-}"
+
+
+# hardstatus alwayslastline "%{= .d}[%H :: $USER] %{=b .b} %=< %-Lw%{=b BW}%n %t%{-}%+Lw >%= %{-}[bat: %2`] [%d.%m.%Y %0c]%{-}"
+
+hardstatus alwayslastline "%{= .d}[%H :: $USER] %{=b .b} %=< %+w%{=b BW}%n-%t %{-}%-w > %= %{-}[bat: %2`] [%d.%m.%Y %0c]%{-}"
+
+
+
+# выключает использование или эмуляцию hardstatus-строки терминала
+# хотя можно использовать вместо caption
+#hardstatus off
+# заголовок, о форматировании заголовка смотреть в мане
+#caption always ' %{-b dd}%-w%{cd}%n* %t%{-}%+w %{cd}%-=(%l) %d/%m %c%{-} '
+
+
+
+# ------------------------------------------------------------------------------
+# STARTUP SCREENS
+# ------------------------------------------------------------------------------
+
+# Example of automatically running some programs in windows on screen startup.
+#
+#   The following will open top in the first window, an ssh session to monkey
+#   in the next window, and then open mutt and tail in windows 8 and 9
+#   respectively.
+#
+# screen top
+# screen -t monkey ssh monkey
+# screen -t mail 8 mutt
+# screen -t daemon 9 tail -f /var/log/daemon.log
+
+#screen -t rtorrent $SHELL -c "rtorrent"
+#screen -t rtorrent
+#screen -t ipython ipython3
+#screen -t main $SHELL -i -l -c "mc"
+
+# screen -t bpython $SHELL -c "bpython3; $SHELL"
+# screen $SHELL -c "mc -d; $SHELL"
+# screen $SHELL -c "mc -d; $SHELL"
+# screen $SHELL -c "mc -d; $SHELL"
+# screen
+# select 3
+
+screen
+screen
+
+#sorendition "-b dw"

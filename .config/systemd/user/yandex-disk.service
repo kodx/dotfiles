@@ -1,0 +1,17 @@
+[Unit]
+Description=Yandex-Disk service
+After=local-fs.target network.target
+ 
+[Service]
+Type=forking
+#ExecStart=%h/.local/bin/yandex-disk start
+#ExecStop=%h/.local/bin/yandex-disk stop
+ExecStart=yandex-disk start
+ExecStop=yandex-disk stop
+ExecReload=/usr/bin/killall -qw yandex-disk
+RestartSec=30
+Restart=always
+ 
+[Install]
+WantedBy=default.target
+

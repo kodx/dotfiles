@@ -1,0 +1,172 @@
+#!/usr/bin/env sh
+
+# check if command exists
+# usage:
+# kxwhich make gcc bison && echo 'make, gcc and bison commands found'
+kxwhich() {
+    for arg in $@; do
+        $(command -v "$arg" > /dev/null) || return 1
+    done
+    return 0
+}
+
+mozillavacuum() {
+    if kxwhich sqlite3; then
+        for x in $(find $HOME/.mozilla -type f -name '*.sqlite' -print); do
+            sqlite3 $x VACUUM
+        done
+    fi
+}
+
+# set alias if command present
+# usage:
+# $ aliasifpresent mcd mc '-d'
+# sets "alias mcd='mc -d'" if mc command is present
+aliasifpresent() {
+    # if number of params lesser than 2
+    [ $# -lt 2 ] && return 1
+    # if command invalid
+    $(command -v "$2" > /dev/null) || return 1
+
+    local aliascmd="$2"
+    local aliasname="$1"
+    local opts=''
+    if [ $# -gt 2 ]; then
+        shift 2
+        aliascmd="$aliascmd $@"
+    fi
+    alias "$aliasname"="$aliascmd"
+}
+
+# make all ' ' '()' ',' '[]' '\' become '_'
+sanitizefiles() {
+    for a in *; do
+        file=$(echo $a | tr A-Z a-z | tr ' ' _ | tr '(' _ | tr ')' _ | tr ',' _  | tr '[' _ | tr \' _ | tr ']' _ )
+        [ ! -f $file ] && mv "$a" $file
+    done
+}
+
+runonce() {
+    if [ $(pgrep -c $1) -eq 0 ]; then
+        $@;
+    fi
+}
+
+cdd() { 
+    [ -z "$1" ] && cd && return 0
+    for i in $(seq 1 1 "$1"); do 
+        cd ..
+    done
+    return 0
+}
+
+if kxwhich dircolors; then
+    test -r $HOME/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    LSOPTS='--color=auto'
+fi
+
+alias rm='rm -i' \
+    mkd='mkdir -pv' \
+    p='pwd' \
+    c='clear' \
+    scr='screen -xRR' \
+    mctab='mc && $SHELL' \
+    su="su -s $SHELL" \
+    h='htop' \
+    hu="htop -u $(whoami)" \
+    j='jobs' \
+    k='pkill' \
+    tmx='tmux attach || tmux' \
+    e="$EDITOR" \
+    se='sudoedit' \
+    vd='vimdiff' \
+    f="$FILEMAN" \
+    q='exit' \
+    psaux='ps auxfww | sed "s/^\(\w\+\s\+\)\(\w\+\)/\1\x1B[1;32m\2\x1B[0m/"' \
+    ls="ls $LS_OPTIONS $LSOPTS -hN --group-directories-first" \
+    l1="ls -1 --sort version" \
+    la="ls -Aal --sort version" \
+    ll="ls -lh --sort version" \
+    grep='grep --color=auto' \
+    fgrep='fgrep --color=auto' \
+    egrep='egrep --color=auto' \
+    mem='free -h' \
+    dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$PWD" \
+    yt="youtube-dl --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
+    yta='yt -x -f bestaudio/best' \
+    mpva='mpv -vo null --no-audio-display' \
+    mpvf='mpv --ytdl-format="bestvideo[height<=?720]+bestaudio/best"' \
+    screencapture="ffmpeg -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 ~/scrvid-$(date +%Y-%m-%d_%H-%M).mp4" \
+    screencapture_audio="ffmpeg -thread_queue_size 512 -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 -f pulse -ac 2 -i default ~/scrvid-audio-$(date +%Y-%m-%d_%H-%M).mp4" 
+
+
+
+#if [ $(command -v 'exa') > /dev/null ]; then
+if kxwhich 'exa'; then
+    unalias 'll' 'l1' 'la' 'l' > /dev/null 2>&1
+    alias l='exa -Gg --icons --group-directories-first -F'
+    alias ll='COLUMNS=1 l -l'
+    alias la='COLUMNS=1 l -la'
+    alias l1='l -1'
+fi
+
+if kxwhich 'bat'; then
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+    export MANROFFOPT="-c"
+    #alias batdiff='git diff --name-only --diff-filter=d | xargs bat --diff'
+fi
+
+if kxwhich 'zoxide'; then
+    eval "$(zoxide init bash)"
+fi
+
+if kxwhich 'lsb_release'; then
+    case "$(lsb_release -is)" in
+        'ManjaroLinux' | 'Arch')
+            if kxwhich 'yay'; then
+                alias pac='yay'
+            else
+                alias pac='sudo pacman'
+            fi
+
+            alias pacs='pac -Ss' \
+                paci='pac -S' \
+                pacd='pac -Rcs' \
+                pacn='pac -Si'
+            ;;
+        'Debian')
+            if kxwhich 'aptitude'; then
+                alias pac='sudo aptitude'
+                alias pacpurge-cached='pac purge \~c' \
+                    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+            else
+                alias pac='sudo apt'
+            fi
+
+            alias pacs='pac search' \
+                paci='pac install' \
+                pacd='pac purge' \
+                pacn='pac show'
+            ;;
+        *)
+            ;;
+    esac
+fi
+
+alias SS='sudo systemctl'
+
+aliasifpresent mc mc '-d'
+aliasifpresent du du '-h'
+aliasifpresent showports ss '-lntu'
+aliasifpresent make colormake
+aliasifpresent diff colordiff
+aliasifpresent df pydf
+aliasifpresent fd fdfind
+aliasifpresent m most
+aliasifpresent encaru enca '-L ru -x utf8'
+aliasifpresent subl "$HOME"/work/programs/sublime_text_3/sublime_text
+aliasifpresent vscodium "$HOME"/work/programs/vscodium/codium
+aliasifpresent telegram "$HOME"/work/programs/Telegram/Telegram
+aliasifpresent pyradio "$HOME"/.local/bin/pyradio/pyradio "$HOME"/.local/bin/pyradio/stations.csv
+
+unset aliasifpresent

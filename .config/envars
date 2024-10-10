@@ -1,0 +1,82 @@
+#!/usr/bin/env sh
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# source from https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
+pathadd() {
+    [ ! -d "$1" ] && return 0
+    case ":$PATH:" in
+        *":$1:"*) :;; # already there
+        *) PATH="$1:$PATH";; # or PATH="$PATH:$1"
+    esac
+}
+
+pathadd "$HOME"/.local/bin
+pathadd "$HOME"/.cargo/bin
+pathadd "$HOME"/bin
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+export XDG_DATA_DIRS="${XDG_DATA_DIRS:-${HOME}/.local/share:/usr/local/share:/usr/share}"
+
+# vscode
+export VSCODE_APPDATA="$XDG_DATA_HOME"/vscode/appdata
+export VSCODE_EXTENSIONS="$XDG_DATA_HOME"/vscode/extensions
+export VSCODE_LOGS=/tmp/vscode-"$USER"
+
+# keepassxc local settings path
+export KPXC_CONFIG_LOCAL="$XDG_CONFIG_HOME"/keepassxc/keepassxc-local.ini
+
+export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
+export LESSHISTFILE=-
+export SCREENRC="$XDG_CONFIG_HOME"/screen/screenrc
+export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvtd
+export URXVT_PERL_LIB="$URXVT_PERL_LIB":"$HOME"/.local/share/urxvt/ext
+export KDEHOME="$XDG_CONFIG_HOME"/kde
+export ELINKS_CONFDIR="$XDG_CONFIG_HOME"/elinks
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv/ComputeCache
+export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"/nv/GLCache
+export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
+
+export EDITOR='vim'
+export TERMINAL='urxvtc'
+export BROWSER='x-www-browser'
+export READER='zathura'
+export FILEMAN='pcmanfm-qt'
+export TASKMAN='xfce4-taskmanager'
+export GTK2_RC_FILES="$HOME"/.config/gtk-2.0/gtkrc-2.0
+#export MOZ_DISABLE_PANGO=1
+#export SDL_AUDIODRIVER='pulse'
+
+export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+#export VIMINIT='source "$XDG_CONFIG_HOME/vim/vimrc"'
+
+#export QT_QPA_PLATFORMTHEME=qt5ct
+#export QT_PLATFORM_PLUGIN=qt5ct
+
+export LESS=-R
+
+RUST_TOOLCHAIN_PATH="$HOME"/work/programs/rust
+export CARGO_HOME="$RUST_TOOLCHAIN_PATH"/cargo
+export RUSTUP_HOME="$RUST_TOOLCHAIN_PATH"/rustup
+pathadd "$CARGO_HOME"/bin
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# gPodder settings
+export GPODDER_HOME="$HOME"/.gPodder
+export GPODDER_DOWNLOAD_DIR="$HOME"/download/podcast
+
+# quick cd to underlying dirs
+export CDPATH=:..:~:~/work:~/work/dev:~/work/projects
+
+
+unset pathadd

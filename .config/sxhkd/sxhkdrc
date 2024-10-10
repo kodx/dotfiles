@@ -1,0 +1,38 @@
+super + shift + q
+    obsession-logout
+
+{control + alt + t, super + shift + Return}
+    $TERMINAL
+
+control + alt + e
+    $FILEMAN
+
+control + shift + Escape
+    $TASKMAN
+
+super + space
+	rofi -combi-modi drun,run -show combi -modi combi
+
+alt + F2
+    rofi
+
+Print
+    scrot
+
+control + alt + q
+    xlogout
+
+control + shift + Print
+    scrot -s
+
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+	pulsevol.sh {minus,plus,mute}
+
+super + control + h
+	pulsevol.sh swport
+
+control + alt + p
+    $BROWSER -no-remote -private-window -P proxied
+
+control + alt + b
+    $BROWSER -no-remote -P default

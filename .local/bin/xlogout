@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import gi, os
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
+class LogoutWindow(Gtk.Window):
+
+    def logout(self, button):
+        # os.system("echo 'awesome.quit()' | awesome-client")
+        # os.system("pkill dwm")
+        os.system("openbox --exit")
+
+    def suspend(self, button):
+        # os.system("gdm-control --reboot && echo 'awesome.quit()' | awesome-client")
+        os.system("dbus-send --system  --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.Suspend boolean:'true'")
+
+    def reboot(self, button):
+        # os.system("gdm-control --reboot && echo 'awesome.quit()' | awesome-client")
+        os.system("dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.Reboot boolean:true")
+
+    def shutdown(self, button):
+        # os.system("gdm-control --shutdown && echo 'awesome.quit()' | awesome-client")
+        os.system("dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.PowerOff boolean:true")
+
+    def on_close(self, button):
+        Gtk.main_quit()
+
+    def __init__(self):
+        Gtk.Window.__init__(self, title="Exit? Choose an option:")
+        self.set_border_width(10)
+        self.set_position(Gtk.WindowPosition.CENTER)
+
+        hbox = Gtk.Box(spacing=6)
+        self.add(hbox)
+
+        buttons_dict = {
+            "Shutdown": (Gtk.STOCK_STOP, self.shutdown),
+            "Reboot": (Gtk.STOCK_REFRESH, self.reboot),
+            "Suspend": (Gtk.STOCK_APPLY, self.suspend),
+            "Logout": (Gtk.STOCK_UNDO, self.logout),
+            "Cancel": (Gtk.STOCK_CLOSE, self.on_close)
+        }
+
+        for k, v in buttons_dict.items():
+            button = Gtk.Button(label=k, image=Gtk.Image(stock=v[0]), always_show_image=True)
+            button.connect("clicked", v[1])
+            hbox.pack_start(button, True, True, 0)
+
+
+def main():
+    win = LogoutWindow()
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
+
+if __name__ == '__main__':
+    main()

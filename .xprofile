@@ -1,0 +1,47 @@
+#!/usr/bin/env sh
+# Author: kodx <kodx.org>
+
+# Clean up after GDM
+#xprop -root -remove _NET_NUMBER_OF_DESKTOPS \
+#   -remove _NET_DESKTOP_NAMES \
+#   -remove _NET_CURRENT_DESKTOP 2> /dev/null
+
+# fix java apps in dwm
+#export AWT_TOOLKIT=MToolkit
+#export _JAVA_AWT_WM_NONREPARENTING=1
+#wmname LG3D &
+
+# set Qt theme
+#export QT_QPA_PLATFORMTHEME=qt5ct
+
+# run gnome-keyring-daemon and export vars 
+#eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)
+
+if [ -f "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi
+
+# This file runs when a DM logs you into a graphical session.
+# If you use startx/xinit, this file will also be sourced.
+
+#start-pulseaudio-x11
+#urxvtd -q -o -f
+# LD_PRELOAD=/usr/lib/spectrwm/libswmhack.so.0.0 urxvtd -q -o -f
+#urxvtd -q -o -f
+#compton -CGb
+#xset b off
+#xset r rate 300 30      # set keyboard delay and repeat rate
+#setxkbmap -layout us,ru -variant ,winkeys -option grp:alt_space_toggle,ctrl:nocaps # set keyboard layout
+#pulseaudio --start -D
+#picom -CGb
+#xinput --set-prop "A4TECH USB Device" "libinput Accel Profile Enabled" 1, 0
+#xinput --set-prop "A4TECH USB Device" "libinput Accel Speed" -0.5
+# tint2 &
+#xsettingsd &
+#dunst &                 # dunst for notifications
+#sxhkd &
+#$HOME/bin/autostart/K50lightsOn.sh
+#$HOME/bin/autostart/K60telegram.sh
+#yandex-disk start &
+#firefox -P default &
+

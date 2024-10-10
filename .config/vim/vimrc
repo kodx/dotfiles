@@ -1,0 +1,528 @@
+" ------------------------------
+" .vimrc kodx <kodx.org>
+" ------------------------------
+
+" backup setup
+if !exists('s:loaded_my_vimrc')
+	" Don't reset twice on reloading - 'compatible' has SO many side effects.
+	set nocompatible  " to use many extensions of Vim.
+
+    set backup                  " make backup file and leave it around 
+    set backupskip&
+    set backupskip+=svn-commit.tmp,svn-commit.[0-9]*.tmp
+    
+"    set viminfo+='1000,n$HOME/.cache/vim/viminfo
+"    set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
+"    set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0700)
+"    set viewdir=$HOME/.cache/vim/view     | call mkdir(&viewdir, 'p', 0700)
+"    set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
+"
+"    set runtimepath=$XDG_CONFIG_HOME/vim,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
+
+    set runtimepath^=$XDG_CONFIG_HOME/vim
+    set runtimepath+=$XDG_DATA_HOME/vim
+    set runtimepath+=$XDG_CONFIG_HOME/vim/after
+
+    set packpath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim
+    set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_DATA_HOME/vim/after
+
+    let g:netrw_home = $XDG_DATA_HOME."/vim"
+    call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
+    set viewdir=$XDG_DATA_HOME/vim/view | call mkdir(&viewdir, 'p', 0700)
+
+    set backupdir=$XDG_CACHE_HOME/vim/backup | call mkdir(&backupdir, 'p', 0700)
+    set directory=$XDG_CACHE_HOME/vim/swap   | call mkdir(&directory, 'p', 0700)
+    set undodir=$XDG_CACHE_HOME/vim/undo     | call mkdir(&undodir,   'p', 0700)
+
+    if !has('nvim') | set viminfofile=$XDG_CACHE_HOME/vim/viminfo | endif
+
+endif
+
+set hidden                  " не требовать сохранения буфера
+" set title                   " показывать имя файла в заголовке окна
+set autoread                " отслеживать изменения файлов
+set visualbell              " ошибки без писка
+set t_vb=					" отключение ужасного мигания
+
+set modeline                " читать параметры конфигурации из открытого файла
+set magic                   " добавим магии
+
+" Indent and tabulation
+set autoindent              " копирует отступ от предыдущей строки
+set smartindent             " включаем 'умную' автоматическую расстановку отступов
+set expandtab               " tab with spaces
+set smarttab
+set shiftwidth=4            " Размер сдвига при нажатии на клавиши << и >>
+set softtabstop=4           " Табуляция 4 пробела
+set shiftround              " удалять лишние пробелы при отступе
+
+" Backup and swap files
+set history=400                     " history length
+set viminfo+=h                      " save history
+set sessionoptions-=blank           " dont save blank vindow
+set sessionoptions-=options           " dont save options
+
+" Search options
+set hlsearch                " Подсветка результатов
+set ignorecase              " Игнорировать регистр букв при поиске
+set incsearch               " При поиске перескакивать на найденный текст в процессе набора строки
+set smartcase               " Игнорировать предыдущую опцию если в строке поиска есть буквы разного регистра
+
+" Localization
+set langmenu=none            " Always use english menu
+set keymap=russian-jcukenwin " Переключение раскладок клавиатуры по <C-^>
+set iminsert=0               " Раскладка по умолчанию - английская
+set imsearch=0               " Раскладка по умолчанию при поиске - английская
+set spelllang=en,ru          " Языки для проверки правописания
+set encoding=utf-8
+set termencoding=utf-8
+set ffs=unix,dos,mac
+set fencs=utf-8,cp1251,koi8-r,ucs-2,cp866
+
+" Строка статуса и командная строка
+set laststatus=2            " всегда отображать статусную строку для каждого окна
+set shortmess=atToOI
+set showcmd                 " show command
+set showmode                " show mode
+set statusline=%-3.3n\ %f\ %r%#Error#%m%#Statusline#\ (%l/%L,\ %c)\ %P%=%h%w\ %y\ [%{&encoding}:%{&fileformat}]\ [file=%{&fileencoding}]\ \ 
+set wildmenu                " использовать wildmenu ...
+set wildcharm=<TAB>         " ... с авто-дополнением
+set wildignore=*.pyc        " Игнорировать pyc файлы
+set cmdheight=1             " Command line height
+
+" Отображение
+if has("folding")
+    set foldenable
+    set foldmethod=marker
+    set foldclose=all
+    set foldlevel=100
+    set foldopen=block,insert,jump,mark,percent,quickfix,search,tag,undo    " This commands open folds
+    set foldnestmax=3           "deepest fold is 3 levels
+endif
+
+"set listchars=tab:>-,trail:-,precedes:<,extends:>
+set listchars=eol:$,tab:>-,trail:·,nbsp:~,extends:>,precedes:<
+set wrap                    " перенос строк
+set linebreak               " перенос строк по словам, а не по буквам
+set showmatch               " подсвечивать скобки
+set winminheight=0          " минимальная высота окна
+set winminwidth=0           " минимальная ширина окна
+set lazyredraw              " перерисовывать буфер менее плавно
+"set confirm                 " использовать диалоги вместо сообщений об ошибках
+"set shortmess=fimnrxoOtTI   " использовать сокращённые диалоги
+
+"set whichwrap=h,l,<,>,[,]
+set whichwrap=b,s,<,>,[,]
+
+set number                  " вывод номеров строк
+
+set backspace=indent,eol,start
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set history=500
+set cinoptions=g0,:0,l1,(0,t0
+set selection=inclusive
+"set textwidth=78			" ширина, после которой будет перенесена строка
+							" formatoptions задает в каких случаях следует переносить
+
+" Редактирование
+set backspace=indent,eol,start
+set clipboard+=unnamed      " включаем X clipboard
+set go+=a                   " выделение в виме копирует в буфер системы
+
+" Скролл
+set scrolloff=6             " 4 символа минимум под курсором
+set sidescroll=6
+set sidescrolloff=10        " 10 символов минимум под курсором при скролле
+
+
+" Customization
+"syntax on
+"colorscheme tango-desert
+"colorscheme desert
+" Set popup menu colors
+"hi pmenu  ctermbg=darkcyan ctermfg=white
+"hi pmenusel ctermbg=red      ctermfg=white
+
+
+if &t_Co > 2
+ syntax on
+  set hlsearch
+  colorscheme desert
+  "colorscheme vjp
+  "hi pmenu	ctermbg=darkcyan ctermfg=white
+  "hi pmenusel	ctermbg=red      ctermfg=white
+endif
+
+
+if &term =~ '^screen'
+    " tmux will send xterm-style keys when its xterm-keys option is on
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+endif
+
+if &term =~ '^xterm'
+    " tmux will send xterm-style keys when its xterm-keys option is on
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+endif
+
+set mousehide		" Hide the mouse when typing text
+
+" Опции автодополнения
+set completeopt=menu
+set infercase               " предлагать авто-дополнение на основе уже введённого регистра
+
+" Подключение тег файла
+set tags=tags
+
+" set custom map leader to ','
+let mapleader = ","
+
+" Plugins setup
+" Taglist
+let Tlist_GainFocus_On_ToggleOpen = 1   " Jump to taglist window to open
+let Tlist_Close_On_Select         = 0   " Close taglist when a file or tag selected
+let Tlist_Exit_OnlyWindow         = 1   " If you are last kill your self
+let Tlist_Show_One_File           = 1   " Displaying tags for only one file
+let Tlist_Use_Right_Window        = 1   " split to rigt side of the screen
+let Tlist_Compart_Format          = 1   " Remove extra information and blank lines from taglist window
+let Tlist_Compact_Format          = 1   " Do not show help
+let Tlist_Enable_Fold_Column      = 0   " Don't Show the fold indicator column
+let Tlist_WinWidth                = 30  " Taglist win width
+let Tlist_Display_Tag_Scope       = 1   " Show tag scope next to the tag name
+let Tlist_BackToEditBuffer        = 0   " If no close on select, let the user choose back to edit buffer or not
+
+let Grep_Skip_Dirs                = 'RCS CVS SCCS .svn .git'
+let Grep_Cygwin_Find              = 1
+
+" NERDCommenter
+" Comment with space
+let NERDSpaceDelims = 1
+
+let g:showmarks_enable=0
+let g:proj_window_width=30
+let g:proj_flags='imsStT'
+
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerFindActive=0
+let g:bufExplorerDetailedHelp=0
+let g:bufExplorerReverseSort=0
+let g:bufExplorerShowDirectories=1
+let g:bufExplorerShowRelativePath=0
+let g:bufExplorerShowUnlisted=0
+let g:bufExplorerSortBy='mru'
+
+let OmniCpp_GlobalScopeSearch = 0
+let OmniCpp_NamespaceSearch = 2
+let OmniCpp_DisplayMode = 0
+let OmniCpp_ShowScopeInAbbr = 0
+let OmniCpp_ShowPrototypeInAbbr = 1
+let OmniCpp_MayCompleteDot = 0
+let OmniCpp_MayCompleteArrow = 0
+let OmniCpp_MayCompleteScope = 0
+let OmniCpp_SelectFirstItem = 2
+
+" Calendar
+" let g:calendar_diary = "~/.diary"
+
+" Alternate
+let g:alternateNoDefaultAlternate = 1
+
+" DoxygenToolkit
+let g:DoxygenToolkit_authorName = "Egor Bayev"
+let g:DoxygenToolkit_briefTag_funcName = "yes"
+
+" NetRW
+let g:netrw_keepdir = 1
+let g:netrw_winsize = 40
+let g:netrw_alto = 1
+
+" SnipMate
+let g:snips_author = 'kodx <kodx.org>'
+
+" ------------------------------
+" functions
+" ------------------------------
+
+" Подсветка текущей раскладки
+fun! KeyMapHighlight()
+   if &iminsert == 0
+        hi StatusLine ctermfg=Gray
+   else
+        hi StatusLine ctermfg=Blue
+    endif
+endfun
+call KeyMapHighlight()
+
+let b:encindex=0
+function! RotateEnc()
+  let y = -1
+  while y == -1
+    let encstring = "#8bit-cp1251#utf-8#8bit-cp866#koi8-r#"
+    let x = match( encstring,"#", b:encindex )
+    let y = match( encstring,"#", x + 1 )
+    let b:encindex = x + 1
+    if y == -1
+      let b:encindex = 0
+    else
+      let str = strpart( encstring, x + 1, y - x - 1 )
+      "return ":set fenc=".str
+      return ":e ++enc=".str
+    endif
+  endwhile
+endfunction
+
+""" Перекодирование файла между русскими кодировками
+""" (кодировки выбираются через меню)
+set wcm=<Tab>
+menu Encoding.Win->utf8  :silent %!iconv -f cp1251 -t utf8<CR>
+menu Encoding.utf8->Win  :silent %!iconv -f utf8 -t cp1251<CR>
+menu Encoding.Dos->utf8  :silent %!iconv -f cp866  -t utf8<CR>
+menu Encoding.utf8->Dos  :silent %!iconv -f utf8 -t cp866 <CR>
+menu Encoding.Win->Dos  :silent %!iconv -f cp1251 -t cp866 <CR>
+menu Encoding.Dos->Win  :silent %!iconv -f cp866  -t cp1251<CR>
+map	<silent><c-f8>	<c-\><c-n>:emenu Encoding.<TAB>
+map!	<silent><c-f8>	<c-\><c-n>:emenu Encoding.<TAB>
+
+""" Умный Home, переходит на первый не пробел в строке
+function! SmartHome()
+  let s:col = col(".")
+  normal! ^
+  if s:col == col(".")
+    normal! 0
+  endif
+endfunction
+
+" ------------------------------
+" usefull macros
+" ------------------------------
+iab Npi 3.1415926535897932384626433832795028841972
+iab Ne  2.7182818284590452353602874713526624977573
+iab ul unsigned long
+iab DATE <c-r>=strftime("%Y.%m.%d %H:%M:%S")<cr>
+iab EDATE <esc>:let lc_time_=v:lc_time<cr>:language time C<cr>a<c-r>=strftime("%a %b %d %Y %X %Z")<cr><esc>:execute "language time " . lc_time_<cr>:unlet lc_time_<cr>a
+iab RDATE <esc>:let lc_time_=v:lc_time<cr>:language time ru_RU.UTF-8<cr>a<c-r>=strftime("%a %b %d %Y %X %Z")<cr><esc>:execute "language time " . lc_time_<cr>:unlet lc_time_<cr>a
+
+" ------------------------------
+" keybindings
+" ------------------------------
+
+" Переключение раскладок будет производиться по <C-F>
+cmap <silent> <C-F> <C-^>
+imap <silent> <C-F> <C-^>X<Esc>:call KeyMapHighlight()<CR>a<C-H>
+nmap <silent> <C-F> a<C-^><Esc>:call KeyMapHighlight()<CR>
+vmap <silent> <C-F> <Esc>a<C-^><Esc>:call KeyMapHighlight()<CR>gv
+
+" Select all
+map vA ggVG
+
+" make word wrap for selected lines
+map	Q		gq
+
+nmap	;		<c-b>
+nmap	\\		<c-]>
+nmap	<RightMouse>	<Insert>
+imap	<RightMouse>	<esc>
+map	<c-z>		<c-\><c-n>u
+map!	<c-z>		<c-\><c-n>ua
+
+" < & > to indent blocks
+vmap < <gv
+vmap > >gv
+
+" Make <Backspace> act as <Delete> in Visual mode?
+vmap <BS> x
+
+" Save current buffer
+map	<silent><f2>	<c-\><c-n>:w<cr>
+map!	<silent><f2>	<c-\><c-n>:w<cr>a
+" Toggle project
+map	<silent><f3>	<c-\><c-n><Plug>ToggleProject
+map!	<silent><f3>	<c-\><c-n><Plug>ToggleProject
+" BufExplorer
+map	<silent><f4>	<c-\><c-n>:BufExplorer<cr>
+map!	<silent><f4>	<c-\><c-n>:BufExplorer<cr>
+" TagList
+map	<silent><f5>	<c-\><c-n>:Tlist<cr>
+map!	<silent><f5>	<c-\><c-n>:Tlist<cr>
+" Show/hide line numbers
+map	<silent><f6>	<c-\><c-n>:set number!<cr>
+map!	<silent><f6>	<c-\><c-n>:set number!<cr>a
+" Set/unset word wrap
+map	<silent><s-f6>	<c-\><c-n>:set wrap!<cr>
+map!	<silent><s-f6>	<c-\><c-n>:set wrap!<cr>a
+" paste mode
+set	pastetoggle=<f7>
+" encoding set
+map	<silent><f8>	<c-\><c-n>:execute RotateEnc()<CR>
+map!	<silent><f8>	<c-\><c-n>:execute RotateEnc()<CR>a
+" make
+map	<silent><f9>	<c-\><c-n>:wa<cr>:make<cr><cr>
+map!	<silent><f9>	<c-\><c-n>:wa<cr>:make<cr><cr>
+" Exit with save
+map	<f10>		<c-\><c-n>:wa<cr>:confirm qa<cr>
+map!	<f10>		<c-\><c-n>:wa<cr>:confirm qa<cr>
+" highlight off
+map	<silent><f11>	<c-\><c-n>:noh<cr>
+map!	<silent><f11>	<c-\><c-n>:noh<cr>a
+" Exit without save
+map	<f12>		<c-\><c-n>:qa!<cr>
+map!	<f12>		<c-\><c-n>:qa!<cr>
+map	<c-f12>		<c-\><c-n>:q!<cr>
+map!	<c-f12>		<c-\><c-n>:q!<cr>
+map	<a-f12>		<c-\><c-n>:qa<cr>
+map!	<a-f12>		<c-\><c-n>:qa<cr>
+" switch between .c -> .h
+map	<s-tab>		<c-\><c-n>:A<cr>
+map!	<s-tab>		<c-\><c-n>:A<cr>
+" call ctags
+" map	<m-f11>		<c-\><c-n>:!ctags<cr><c-\><c-n>
+" Calendar 
+map	<m-f12>		<c-\><c-n>:Calendar<cr><c-\><c-n>
+
+nmap	<PageUp>	<C-S-U><C-S-U>
+imap	<PageUp>	<C-O><C-S-U><C-O><C-S-U>
+nmap	<PageDown>	<C-S-D><C-S-D>
+imap	<PageDown>	<C-O><C-S-D><C-O><C-S-D>
+
+nnoremap <silent> <Home> :call SmartHome()<CR>
+inoremap <silent> <Home> <C-O>:call SmartHome()<CR>
+
+nmap <Leader>va <Plug>VCSAdd
+nmap <Leader>vn <Plug>VCSAnnotate
+nmap <Leader>vc <Plug>VCSCommit
+nmap <Leader>vd <Plug>VCSDiff
+nmap <Leader>vg <Plug>VCSGotoOriginal
+nmap <Leader>vG <Plug>VCSGotoOriginal!
+nmap <Leader>vl <Plug>VCSLog
+nmap <Leader>vL <Plug>VCSLock
+nmap <Leader>vr <Plug>VCSReview
+nmap <Leader>vs <Plug>VCSStatus
+nmap <Leader>vu <Plug>VCSUpdate
+nmap <Leader>vU <Plug>VCSUnlock
+nmap <Leader>vv <Plug>VCSVimDiff
+
+" For 'view' mode
+if &readonly == 1
+	set nonumber
+	set nofoldenable
+	set foldcolumn=10
+	nmap <F10> :qa<cr>
+	nmap <Space> <PageDown>
+endif
+
+if has("autocmd")
+  filetype plugin indent on
+  " When editing a file, always jump to the last cursor position
+  autocmd BufReadPost *
+        \ if ! exists("g:leave_my_cursor_position_alone") |
+        \     if line("'\"") > 0 && line ("'\"") <= line("$") |
+        \         exe "normal g'\"" |
+        \     endif |
+        \ endif
+  augroup vimrcEx
+    au!
+    au BufNewFile,BufRead mutt-*-*-*-* 1;/^  
+    au BufNewFile,BufRead mutt-*-*-*-* startinsert!
+    au BufNewFile,BufRead *.ds	set syn=scheme
+    au BufNewFile,BufRead *.txt	nmap <space> <c-f>
+    au BufNewFile,BufRead svn-commit*.tmp	set nobackup
+	au BufNewFile,BufRead *.phps    set filetype=php
+	au BufNewFile,BufRead *.thtml    set filetype=php
+	au BufNewFile,BufRead *.sql set filetype=mysql
+    au FileType c,cpp	set cindent
+    au FileType python	set ai
+    au FileType python	set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+    au FileType r	set makeprg=./%
+    au FileType r	map	<silent><f9>	<c-\><c-n>:wa<cr>:make!<cr>
+    au FileType r	map!	<silent><f9>	<c-\><c-n>:wa<cr>:make!<cr>
+    "au FileType text	setlocal textwidth=78
+
+  augroup END
+  augroup Binary
+    au!
+    au BufReadPre  *.bin let &bin=1
+    au BufReadPost *.bin if &bin | %!xxd
+    au BufReadPost *.bin set ft=xxd | endif
+    au BufWritePre *.bin if &bin | %!xxd -r
+    au BufWritePre *.bin endif
+    au BufWritePost *.bin if &bin | %!xxd
+    au BufWritePost *.bin set nomod | endif
+  augroup END
+endif
+
+""" Поддержка командного режима при русской раскладке (аналог langmap для UTF-8)
+map ё `
+map й q
+map ц w
+map у e
+map к r
+map е t
+map н y
+map г u
+map ш i
+map щ o
+map з p
+map х [
+map ъ ]
+map ф a
+map ы s
+map в d
+map а f
+map п g
+map р h
+map о j
+map л k
+map д l
+map ж ;
+map э '
+map я z
+map ч x
+map с c
+map м v
+map и b
+map т n
+map ь m
+map б ,
+map ю .
+map Ё ~
+map Й Q
+map Ц W
+map У E
+map К R
+map Е T
+map Н Y
+map Г U
+map Ш I
+map Щ O
+map З P
+map Х {
+map Ъ }
+map Ф A
+map Ы S
+map В D
+map А F
+map П G
+map Р H
+map О J
+map Л K
+map Д L
+map Ж :
+map Э "
+map Я Z
+map Ч X
+map С C
+map М V
+map И B
+map Т N
+map Ь M
+map Б <
+map Ю >
+

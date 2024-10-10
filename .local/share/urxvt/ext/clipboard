@@ -1,0 +1,41 @@
+#! perl -w
+
+# Usage:
+# URxvt.perl-ext-common: clipboard
+# URxvt.keysym.Mod4-c: perl:clipboard:copy
+# URxvt.keysym.Mod4-v: perl:clipboard:paste
+
+# consult command "xmodmap" to see what your modifier mapped into.
+
+sub copy {
+   my ($self) = @_;
+   my $pid = open( pout, "| xsel -ib -l /dev/null" ) or die "fork";
+   print pout $self->selection;
+   close(pout) or die "close";
+}
+
+sub paste {
+   my ($self) = @_;
+   my $content = `xsel -ob -l /dev/null` ;
+   $self->tt_write ($content);
+}
+
+sub on_user_command {
+   my ($self, $cmd) = @_;
+   if ($cmd eq "clipboard:copy") {
+      $self->copy;
+   }
+   if ($cmd eq "clipboard:paste") {
+      $self->paste;
+   }
+}
+
+sub on_sel_grab {
+   my ($self, $time) = @_;
+
+   $self->selection ($self->selection, 1);
+   $self->selection_grab ($time, 1);
+
+   ()
+}
+
