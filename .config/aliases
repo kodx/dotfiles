@@ -1,67 +1,96 @@
 #!/usr/bin/env sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-# check if command exists
+# Succeed only when every argument resolves to a command known to the shell.
+# Used before defining optional aliases so a missing tool does not create a
+# broken alias; returns 1 on the first unresolved argument.
 # usage:
 # kxwhich make gcc bison && echo 'make, gcc and bison commands found'
 kxwhich() {
-    for arg in $@; do
-        $(command -v "$arg" > /dev/null) || return 1
+    for arg in "$@"; do
+        command -v "$arg" > /dev/null || return 1
     done
     return 0
 }
 
+# Reclaim space in Firefox's SQLite databases with `VACUUM`.
+# Requires sqlite3; exits silently when ~/.mozilla does not exist. Refuses to
+# touch the databases while Firefox is running, since VACUUM needs exclusive
+# access and the browser must not keep them open.
 mozillavacuum() {
-    if kxwhich sqlite3; then
-        for x in $(find $HOME/.mozilla -type f -name '*.sqlite' -print); do
-            sqlite3 $x VACUUM
-        done
+    kxwhich sqlite3 pgrep find || return 1
+    [ -d "$HOME/.mozilla" ] || return 0
+    if pgrep '^firefox' > /dev/null 2>&1; then
+        printf 'mozillavacuum: close Firefox first\n' >&2
+        return 1
     fi
+    find "$HOME"/.mozilla -type f -name '*.sqlite' -exec sqlite3 {} VACUUM \;
 }
 
-# set alias if command present
+# Define an alias only when the target command exists.
 # usage:
 # $ aliasifpresent mcd mc '-d'
 # sets "alias mcd='mc -d'" if mc command is present
+# POSIX sh has no `local`, so the alias name is kept in a prefixed temporary
+# variable; the remaining arguments are space-joined to form the alias value.
 aliasifpresent() {
     # if number of params lesser than 2
-    [ $# -lt 2 ] && return 1
-    # if command invalid
-    $(command -v "$2" > /dev/null) || return 1
+    [ "$#" -lt 2 ] && return 1
+    # if command is not available
+    kxwhich "$2" || return 1
 
-    local aliascmd="$2"
-    local aliasname="$1"
-    local opts=''
-    if [ $# -gt 2 ]; then
-        shift 2
-        aliascmd="$aliascmd $@"
-    fi
-    alias "$aliasname"="$aliascmd"
+    _aliasifpresent_name=$1
+    shift
+    # shellcheck disable=SC2139 # value is built from the arguments on purpose
+    alias "$_aliasifpresent_name=$*"
+    unset _aliasifpresent_name
 }
 
-# make all ' ' '()' ',' '[]' '\' become '_'
+# Normalise file names in the current directory for safer shell use:
+# lowercase them and replace spaces, parentheses, commas, brackets and
+# apostrophes with underscores. Files whose sanitised name already exists (or
+# is unchanged) are left alone and reported, so a rename never overwrites
+# another file.
 sanitizefiles() {
+    kxwhich tr mv || return 1
     for a in *; do
-        file=$(echo $a | tr A-Z a-z | tr ' ' _ | tr '(' _ | tr ')' _ | tr ',' _  | tr '[' _ | tr \' _ | tr ']' _ )
-        [ ! -f $file ] && mv "$a" $file
+        file=$(printf '%s' "$a" | tr '[:upper:]' '[:lower:]' | tr ' ' _ | tr '(' _ | tr ')' _ | tr ',' _ | tr '[' _ | tr \' _ | tr ']' _)
+        [ "$a" = "$file" ] && continue
+        if [ -e "$file" ] || [ -L "$file" ]; then
+            printf 'skip: %s -> %s (target exists)\n' "$a" "$file"
+            continue
+        fi
+        mv -- "$a" "$file"
     done
 }
 
+# Run a command only if no process with the same name is already running.
+# The first argument is the process name checked with `pgrep -x`; the whole
+# command line is executed only when no exact match is found. Useful for
+# starting daemons from shell startup without creating duplicates.
 runonce() {
-    if [ $(pgrep -c $1) -eq 0 ]; then
-        $@;
+    kxwhich pgrep || return 1
+    [ "$#" -gt 0 ] || return 1
+    if ! pgrep -x "$1" > /dev/null 2>&1; then
+        "$@"
     fi
 }
 
-cdd() { 
-    [ -z "$1" ] && cd && return 0
-    for i in $(seq 1 1 "$1"); do 
-        cd ..
-    done
-    return 0
+# Show the full process list with the PID column highlighted in green.
+# `ps auxfww` gives a tree with unlimited width (BSD-style, works on Linux
+# and BSD). The sed expression uses POSIX character classes and inserts ESC
+# via printf, so it does not depend on GNU sed extensions.
+psaux() {
+    kxwhich ps sed || return 1
+    ps auxfww | sed "s/^\([[:alnum:]_]\{1,\}[[:space:]]\{1,\}\)\([[:alnum:]_]\{1,\}\)/\1$(printf '\033')[1;32m\2$(printf '\033')[0m/"
 }
 
 if kxwhich dircolors; then
-    test -r $HOME/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    if [ -r "$HOME/.dircolors" ]; then
+        eval "$(dircolors -b ~/.dircolors)"
+    else
+        eval "$(dircolors -b)"
+    fi
     LSOPTS='--color=auto'
 fi
 
@@ -71,40 +100,39 @@ alias rm='rm -i' \
     c='clear' \
     scr='screen -xRR' \
     mctab='mc && $SHELL' \
-    su="su -s $SHELL" \
+    su='su -s $SHELL' \
     h='htop' \
-    hu="htop -u $(whoami)" \
+    hu='htop -u $(whoami)' \
     j='jobs' \
     k='pkill' \
     tmx='tmux attach || tmux' \
-    e="$EDITOR" \
+    e='$EDITOR' \
     se='sudoedit' \
     vd='vimdiff' \
-    f="$FILEMAN" \
+    f='$FILEMAN' \
     q='exit' \
-    psaux='ps auxfww | sed "s/^\(\w\+\s\+\)\(\w\+\)/\1\x1B[1;32m\2\x1B[0m/"' \
-    ls="ls $LS_OPTIONS $LSOPTS -hN --group-directories-first" \
+    ls='ls $LSOPTS -hN --group-directories-first' \
     l1="ls -1 --sort version" \
     la="ls -Aal --sort version" \
     ll="ls -lh --sort version" \
     grep='grep --color=auto' \
-    fgrep='fgrep --color=auto' \
-    egrep='egrep --color=auto' \
+    fgrep='grep -F' \
+    egrep='grep -E' \
     mem='free -h' \
-    dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$PWD" \
-    yt="youtube-dl --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
+    dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME' \
+    yt="yt-dlp --add-metadata -i -o '%(upload_date)s-%(title)s.%(ext)s'" \
     yta='yt -x -f bestaudio/best' \
     mpva='mpv -vo null --no-audio-display' \
     mpvf='mpv --ytdl-format="bestvideo[height<=?720]+bestaudio/best"' \
-    screencapture="ffmpeg -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 ~/scrvid-$(date +%Y-%m-%d_%H-%M).mp4" \
-    screencapture_audio="ffmpeg -thread_queue_size 512 -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 -f pulse -ac 2 -i default ~/scrvid-audio-$(date +%Y-%m-%d_%H-%M).mp4" 
+    kvsport='ssh -L 8080:localhost:57244 kvserv' \
+    screencapture='ffmpeg -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 ~/scrvid-$(date +%Y-%m-%d_%H-%M).mp4' \
+    screencapture_audio='ffmpeg -thread_queue_size 512 -f x11grab -s 1920x1080 -r 60 -probesize 42M -i :0.0+0,0 -f pulse -ac 2 -i default ~/scrvid-audio-$(date +%Y-%m-%d_%H-%M).mp4'
 
 
 
-#if [ $(command -v 'exa') > /dev/null ]; then
-if kxwhich 'exa'; then
+if kxwhich 'eza'; then
     unalias 'll' 'l1' 'la' 'l' > /dev/null 2>&1
-    alias l='exa -Gg --icons --group-directories-first -F'
+    alias l='eza -Gg --icons --group-directories-first -F'
     alias ll='COLUMNS=1 l -l'
     alias la='COLUMNS=1 l -la'
     alias l1='l -1'
@@ -116,37 +144,43 @@ if kxwhich 'bat'; then
     #alias batdiff='git diff --name-only --diff-filter=d | xargs bat --diff'
 fi
 
-if kxwhich 'zoxide'; then
-    eval "$(zoxide init bash)"
-fi
-
+# package manager agnostic control - pac
+# pac - run package manager without options
+# pacs - search
+# paci - install
+# pacd - remove
+# pacn - show info
 if kxwhich 'lsb_release'; then
     case "$(lsb_release -is)" in
         'ManjaroLinux' | 'Arch')
-            if kxwhich 'yay'; then
-                alias pac='yay'
+            AUR_HELPER='paru'
+            if kxwhich "$AUR_HELPER"; then
+                # shellcheck disable=SC2139 # expansion at definition time is intended
+                alias pac="$AUR_HELPER"
             else
                 alias pac='sudo pacman'
             fi
 
-            alias pacs='pac -Ss' \
-                paci='pac -S' \
-                pacd='pac -Rcs' \
-                pacn='pac -Si'
+            alias pacs='pac -Ss'
+            alias paci='pac -S'
+            alias pacd='pac -Rcs'
+            alias pacn='pac -Si'
+            alias pac-clean='pac -Scc'
             ;;
-        'Debian')
+        'Debian' | 'Ubuntu')
             if kxwhich 'aptitude'; then
                 alias pac='sudo aptitude'
-                alias pacpurge-cached='pac purge \~c' \
-                    pacpurge-kernels="pac purge \(~c\|~i\)\(linux\.\*-\(image\|headers\|tools\)\.\*-\[0-9\]\)\(\!$(uname -r | cut -f1,2 -d-)\)"
+                alias pacpurge-cached='pac purge \~c'
             else
                 alias pac='sudo apt'
             fi
 
-            alias pacs='pac search' \
-                paci='pac install' \
-                pacd='pac purge' \
-                pacn='pac show'
+            alias pacpurge-kernels='sudo apt autoremove --purge'
+
+            alias pacs='pac search'
+            alias paci='pac install'
+            alias pacd='pac purge'
+            alias pacn='pac show'
             ;;
         *)
             ;;
@@ -157,7 +191,7 @@ alias SS='sudo systemctl'
 
 aliasifpresent mc mc '-d'
 aliasifpresent du du '-h'
-aliasifpresent showports ss '-lntu'
+aliasifpresent showports ss '-tulpen'
 aliasifpresent make colormake
 aliasifpresent diff colordiff
 aliasifpresent df pydf
@@ -165,8 +199,6 @@ aliasifpresent fd fdfind
 aliasifpresent m most
 aliasifpresent encaru enca '-L ru -x utf8'
 aliasifpresent subl "$HOME"/work/programs/sublime_text_3/sublime_text
-aliasifpresent vscodium "$HOME"/work/programs/vscodium/codium
-aliasifpresent telegram "$HOME"/work/programs/Telegram/Telegram
 aliasifpresent pyradio "$HOME"/.local/bin/pyradio/pyradio "$HOME"/.local/bin/pyradio/stations.csv
 
-unset aliasifpresent
+unset aliasifpresent AUR_HELPER

@@ -1,9 +1,13 @@
 #!/usr/bin/env sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # the default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+# Prepend a directory to PATH only if it exists and is not already listed.
+# The colon-wrapped match prevents duplicates and substring false positives
+# (e.g. "/usr/bin" vs "/usr/local/bin"). Unset after PATH is built.
 # source from https://unix.stackexchange.com/questions/14895/duplicate-entries-in-path-a-problem
 pathadd() {
     [ ! -d "$1" ] && return 0
@@ -25,7 +29,7 @@ export XDG_DATA_DIRS="${XDG_DATA_DIRS:-${HOME}/.local/share:/usr/local/share:/us
 # vscode
 export VSCODE_APPDATA="$XDG_DATA_HOME"/vscode/appdata
 export VSCODE_EXTENSIONS="$XDG_DATA_HOME"/vscode/extensions
-export VSCODE_LOGS=/tmp/vscode-"$USER"
+export VSCODE_LOGS="$XDG_CACHE_HOME"/vscode/logs
 
 # keepassxc local settings path
 export KPXC_CONFIG_LOCAL="$XDG_CONFIG_HOME"/keepassxc/keepassxc-local.ini
@@ -33,14 +37,14 @@ export KPXC_CONFIG_LOCAL="$XDG_CONFIG_HOME"/keepassxc/keepassxc-local.ini
 export INPUTRC="$XDG_CONFIG_HOME"/readline/inputrc
 export LESSHISTFILE=-
 export SCREENRC="$XDG_CONFIG_HOME"/screen/screenrc
-export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvtd
-export URXVT_PERL_LIB="$URXVT_PERL_LIB":"$HOME"/.local/share/urxvt/ext
+[ -n "$XDG_RUNTIME_DIR" ] && export RXVT_SOCKET="$XDG_RUNTIME_DIR"/urxvtd
+export URXVT_PERL_LIB="${URXVT_PERL_LIB:+$URXVT_PERL_LIB:}$HOME/.local/share/urxvt/ext"
 export KDEHOME="$XDG_CONFIG_HOME"/kde
 export ELINKS_CONFDIR="$XDG_CONFIG_HOME"/elinks
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv/ComputeCache
 export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"/nv/GLCache
 export GNUPGHOME="$XDG_DATA_HOME"/gnupg
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
+[ -n "$XDG_RUNTIME_DIR" ] && export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
 
 export EDITOR='vim'
 export TERMINAL='urxvtc'
@@ -52,28 +56,23 @@ export GTK2_RC_FILES="$HOME"/.config/gtk-2.0/gtkrc-2.0
 #export MOZ_DISABLE_PANGO=1
 #export SDL_AUDIODRIVER='pulse'
 
-export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
-#export VIMINIT='source "$XDG_CONFIG_HOME/vim/vimrc"'
-
 #export QT_QPA_PLATFORMTHEME=qt5ct
 #export QT_PLATFORM_PLUGIN=qt5ct
 
 export LESS=-R
 
-RUST_TOOLCHAIN_PATH="$HOME"/work/programs/rust
-export CARGO_HOME="$RUST_TOOLCHAIN_PATH"/cargo
-export RUSTUP_HOME="$RUST_TOOLCHAIN_PATH"/rustup
-pathadd "$CARGO_HOME"/bin
-
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+command -v lesspipe > /dev/null && eval "$(SHELL=/bin/sh lesspipe)"
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # gPodder settings
-export GPODDER_HOME="$HOME"/.gPodder
-export GPODDER_DOWNLOAD_DIR="$HOME"/download/podcast
+export GPODDER_HOME="${XDG_CONFIG_HOME}"/gPodder
+export GPODDER_DOWNLOAD_DIR="${HOME}"/download/podcast
+
+# Local LLM storage
+export HF_HUB_CACHE="$HOME"/storage/llms/models
 
 # quick cd to underlying dirs
 export CDPATH=:..:~:~/work:~/work/dev:~/work/projects

@@ -1,90 +1,134 @@
 [alias]
-    exec = ! "exec"
-    versions = tag -l --sort=version:refname
+    au = add -u
+    bed = branch --edit-description
     br = branch -vv
     bra = branch -vv --all
-    bed = branch --edit-description
-	st = status
-    s = status -sb
-    au = add -u
-    ci = commit -v
-    ca = commit --amend -v
     ca = commit -a
+    cc = rev-list HEAD --count
+    cca = rev-list --all --count
+    ci = commit -v
+    cleanall = clean -fdx # this is dangerous, so it's intentionally long to type
     cm = commit -m
     cma = commit -a -m
-    br = branch
     co = checkout
-    w = whatchanged
-    di = diff
-    dis = diff --stat
-    diw = diff --color-words
+    count = diff --stat "4b825dc642cb6eb9a060e54bf8d69288fbee4904" # hash of empty tree
+    credit = shortlog -sn
+    ctags = ! "ctg() { trap \"rm -f .git/tags.$$\" EXIT; ctags --tag-relative -Rf.git/tags.$$ --exclude=.git; mv .git/tags.$$ .git/tags; }; ctg"
     dc = diff --cached
     dcs = diff --cached --stat
     dcw = diff --cached --color-words
     dh = diff HEAD~
     dhs = diff HEAD~ --stat
     dhw = diff HEAD~ --color-words
+    di = diff
+    dis = diff --stat
+    diw = diff --color-words
     du = diff @{u}...
     dus = diff @{u}... --stat
     duw = diff @{u}... --color-words
-    save = commit -a -m "Save"
-    grp = grep -C 1
-    ff = merge --ff-only
-    noff = merge --no-ff
+    empty-tree-hash = hash-object -t tree /dev/null
+    exec = ! "exec"
     f = fetch --tags --prune
     fa = fetch --all --tags --prune
-    lg = log -p
+    ff = merge --ff-only
     gr = log --graph --format=line # graph
-    grd = log --graph --format=detail # graph detail
     gra = log --graph --format=line --all # graph all
     grad = log --graph --format=detail --all # graph all in detail
-    sf = show --format=fuller --show-signature
-    sfw = show --format=fuller --color-words
-    sfs = show --format=fuller --stat
+    grd = log --graph --format=detail # graph detail
+    grp = grep -C 1
     l = log --decorate --pretty=format:'%C(auto)%h%C(auto) %C(auto,cyan)(%cd)%Creset %s %C(auto)%d%C(auto) %C(auto,magenta)[%an]%C(auto)' --date='format:%Y-%m-%d %H:%M'
+    lg = log -p
+    linecredit = ! "lc() { git ls-tree --name-only -z -r HEAD | xargs -0 -n1 git diff --no-index --numstat /dev/null 2>/dev/null | grep -v '^-' | cut -f 3- | cut -d ' ' -f 3- | xargs -n1 git blame --line-porcelain | grep '^author ' | cut -d ' ' -f 2- | sort | uniq -c | sort -nr; }; lc"
+    list = ls-tree -r master --name-only
     ll = l --graph --branches --tags
     lll = l --graph --all
     llog = log --date=local
-    list = ls-tree -r master --name-only
-    who = shortlog -s --
-    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    mirror-remote = ! "mr() { git push \"${2}\" \"refs/remotes/${1}/*:refs/heads/*\" && git remote set-head \"${2}\" -a; }; mr"
+    noff = merge --no-ff
     pub = "!f() { git push -u ${1:-origin} $(git symbolic-ref HEAD); }; f"
     pullf = "!sh -c 'git fetch --all; git reset --hard origin/master'"
-    up = pull --rebase
-    put = push origin HEAD
     pullrb = pull --rebase
-    mirror-remote = ! "mr() { git push \"${2}\" \"refs/remotes/${1}/*:refs/heads/*\" && git remote set-head \"${2}\" -a; }; mr"
-    count = diff --stat "4b825dc642cb6eb9a060e54bf8d69288fbee4904" # hash of empty tree
-    credit = shortlog -sn
-    linecredit = ! "lc() { git ls-tree --name-only -z -r HEAD | xargs -0 -n1 git diff --no-index --numstat /dev/null 2>/dev/null | grep -v '^-' | cut -f 3- | cut -d ' ' -f 3- | xargs -n1 git blame --line-porcelain | grep '^author ' | cut -d ' ' -f 2- | sort | uniq -c | sort -nr; }; lc"
-    cc = rev-list HEAD --count
-    cca = rev-list --all --count
-    showtool = ! "st() { if [ -z $1 ]; then c='HEAD'; else c=$1; fi; git difftool $c~..$c; }; st"
-    info = ! "inf() { if git rev-parse ${1} >/dev/null 2>&1; then git cat-file -p $(git rev-parse ${1}); else echo Invalid object; fi }; inf"
-    cleanall = clean -fdx # this is dangerous, so it's intentionally long to type
-    stsh = stash --keep-index
-    staash = stash --include-untracked
-    update-submodules = submodule update --init --recursive
-    upgrade-submodules = submodule update --init --remote
-    empty-tree-hash = hash-object -t tree /dev/null
+    put = push origin HEAD
     root = rev-parse --show-toplevel
-    ctags = ! "ctg() { trap \"rm -f .git/tags.$$\" EXIT; ctags --tag-relative -Rf.git/tags.$$ --exclude=.git; mv .git/tags.$$ .git/tags; }; ctg"
+    s = status -sb
+    save = commit -a -m "Save"
+    sf = show --format=fuller --show-signature
+    sfs = show --format=fuller --stat
+    sfw = show --format=fuller --color-words
+    showtool = ! "st() { if [ -z $1 ]; then c='HEAD'; else c=$1; fi; git difftool $c~..$c; }; st"
+    st = status
+    staash = stash --include-untracked
+    stsh = stash --keep-index
+    # show tags with their types, without mark - lightweight, `a` - annotated, `b` - blob
+    tags = for-each-ref --format='%(if:equals=tag)%(objecttype)%(then)a %(else)%(if:equals=blob)%(objecttype)%(then)b %(else)  %(end)%(end)%(align:20,right)%(refname:short)%09%(objectname:short)%(end)%09%(if:equals=tag)%(objecttype)%(then)@%(object) %(contents:subject)%(else)%(end)' --sort=taggerdate refs/tags
     tar = ! "tar() { git archive --format tar --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; tar"
     targz = ! "targz() { git archive --format tar.gz --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; targz"
+    up = pull --rebase
+    update-submodules = submodule update --init --recursive
+    upgrade-submodules = submodule update --init --remote
+    versions = tag -l --sort=version:refname
+    w = whatchanged
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    who = shortlog -s --
+    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
     zip = ! "zip() { git archive --format zip --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; zip"
-    # usage: 
+    # usage:
+    # $ git squash N
+    # N is number of last commits to squash, inclusive
+    squash = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\"; };f"
+    # usage:
     # $ git squash-all -m 'a new start'
     # $ git push -f
     squash-all = "!f(){ git reset $(git commit-tree \"HEAD^{tree}\" \"$@\");};f"
-#[core]
-#    pager = delta
-#[interactive]
-#    diffFilter = delta --color-only
-#[delta]
-#    navigate = true  # use n and N to move between diff sections
-#[merge]
-#    conflictstyle = zdiff3
+    versionbump = !"cd -- ${GIT_PREFIX:-.} && V=$(git tag --sort=-version:refname --list \"v[0-9]*\" | head -n 1) \
+        && if [ -z \"$V\" ]; then V='v0.0.0'; fi \
+        && if [ \"$1\" == '.' ] || [ \"$1\" == 'patch' ]; then \
+                awkV='{OFS=\".\"; $NF+=1; print $0}'; \
+            elif [ \"$1\" == '..' ] || [ \"$1\" == 'minor' ]; then \
+                awkV='{OFS=\".\"; $2+=1; $3=0; print $0}'; \
+            elif [ \"$1\" == '...' ] || [ \"$1\" == 'major' ]; then \
+                awkV='{OFS=\".\"; $1+=1; $2=0; $3=0; print \"v\"$0}'; \
+            else echo 'No version specified. Specify one of patch, minor, or major.'; exit 1; \
+        fi \
+        && if [ -z \"$awkV\" ]; then exit 1; else newV=$(echo $V | awk -F. \"$awkV\"); fi \
+        && read -r -p \"Do you want to tag with version ${newV}?: \" tmp \
+        && ([[ $tmp =~ ^[Yy] ]] && git tag -a \"${newV}\" -m \"${newV}\" \"${@:2}\") && echo \"Tagged version ${newV}\" \
+        || exit 1 #"
+    # manual version bump
+    # usage:
+    # `git bump` followed by one, two or three dots, or string patch, minor, or major to tell it which part of the version string to bump
+    # . -> patch (1.0.x)
+    # .. -> minor (1.x.0)
+    # ... -> major (x.0.0)
+    # examples:
+    # increase patch version, e.g. v1.0.1 -> v1.0.2
+    # $ git bump patch
+    # increase minor version, e.g. v1.0.1 -> v1.1.0
+    # $ git bump ..
+    bump = !git versionbump
+    # git-cliff version bump
+    bump-cliff = !"cd -- ${GIT_PREFIX:-.} \
+        && if ! $(command -v git-cliff 2>&1 >/dev/null); then\
+            echo 'git-cliff not found, exit'; exit 1; \
+        else \
+            ERRVAR=\"$(git-cliff --bumped-version 2>&1 > /dev/null)\"; \
+            if ! [[ -z \"$ERRVAR\" ]]; then \
+                echo \"${ERRVAR}\" && exit 1; \
+            fi; \
+            V=$(git-cliff --bumped-version); \
+        fi \
+        && echo 'bumping to' $V \
+        && git tag -a \"${V}\" -m \"${V}\" \"${@:2}\" \
+        || exit 1 #"
+[core]
+    #pager = delta
+    #editor = 'c:/programs/sublimetext/subl.exe' -w --launch-or-new-window
+[interactive]
+    #diffFilter = delta --color-only
+[delta]
+    navigate = true  # use n and N to move between diff sections
+[merge]
+    conflictstyle = zdiff3
 [user]
     useConfigOnly = true
 [init]
@@ -110,6 +154,7 @@
     detail = "%C(auto)%h %s%n  %C(yellow)by %C(blue)%an %C(magenta)<%ae> [%G?] %C(green)%ad%n %C(auto)%d%n"
 [push]
     default = simple
+    followTags = true
 [grep]
     lineNumber = true
 # Allow local customizations in the config.local file
@@ -117,3 +162,4 @@
     path = ~/.config/git/config.local
 [includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
     path = ~/.config/git/config.github
+

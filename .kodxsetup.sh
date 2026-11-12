@@ -299,7 +299,8 @@ makedirs() {
         docs/share
         docs/templates
         download
-        work
+        devel
+        storage
     '
     for e in "$_dirlist"; do
         mkdir -pv $e

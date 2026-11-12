@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# shellcheck shell=bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -19,12 +21,12 @@ shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
-HISTFILESIZE=2000
+HISTFILESIZE=10000
 
 # History with timestamp
 HISTTIMEFORMAT="%t%d.%m.%y %H:%M:%S%t"
 # HISTIGNORE="&:ls:[bf]g:exit: cd \"\`*: PROMPT_COMMAND='*"
-HISTIGNORE=${HISTIGNORE:-"&:ls:[bf]g:exit: cd \"\`*: PROMPT_COMMAND='*:shutdown*:halt*:poweroff*:hibernate*:rm -rf*"}
+HISTIGNORE=${HISTIGNORE:-"&:ls:[bf]g:exit: cd \"\`*: PROMPT_COMMAND='*"}
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -54,12 +56,19 @@ if [ "$UID" != 0 ]; then
 fi
 
 if [ -f "$HOME"/.local/bin/git-prompt.sh ]; then
+    # shellcheck source=/dev/null
     source "$HOME"/.local/bin/git-prompt.sh
-    use_git_prompt=$($(command -v '__git_ps1' > /dev/null) && echo 'yes' || echo 'no')
+    if command -v '__git_ps1' > /dev/null; then
+        use_git_prompt=yes
+    else
+        use_git_prompt=no
+    fi
 fi
 
 if [ "$use_git_prompt" = yes ]; then
+    # shellcheck disable=SC2034 # read by git-prompt.sh
     GIT_PS1_SHOWCOLORHINTS='yes'
+    # shellcheck disable=SC2034 # read by git-prompt.sh
     GIT_PS1_SHOWDIRTYSTATE='yes'
     PROMPT_COMMAND='__git_ps1 "\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;96m\]\w\[\033[00m\]" "\\\$ " " \[\033[01;35m\][\[\033[00m\]%s\[\033[01;35m\]]\[\033[00m\]"'
 else
@@ -71,10 +80,11 @@ fi
 unset use_git_prompt
 
 if [ -f "$HOME/.config/aliases" ]; then
+    # shellcheck source=/dev/null
     . "$HOME/.config/aliases"
 fi
 
-if [ -n "$DISPLAY" ]; then
+if [ -n "$DISPLAY" ] && command -v xset > /dev/null; then
   xset b off
 fi
 
@@ -83,8 +93,10 @@ fi
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
+    # shellcheck source=/dev/null
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
+    # shellcheck source=/dev/null
     . /etc/bash_completion
   fi
 fi
