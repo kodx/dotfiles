@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Run shellcheck on staged shell scripts; skipped when shellcheck is absent.
+
+command -v shellcheck > /dev/null 2>&1 || exit 0
+
+status=0
+while IFS= read -r -d '' file; do
+    [ -f "$file" ] || continue
+    # Only check files that declare a shell: shebang or shellcheck directive.
+    if head -n 5 "$file" | grep -qE '^#!.*(ba|da|k|z)?sh|^# shellcheck shell='; then
+        shellcheck -S error "$file" || status=1
+    fi
+done < <(git diff --cached --name-only --diff-filter=ACM -z)
+
+exit "$status"

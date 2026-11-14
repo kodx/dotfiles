@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Author: kodx <kodx.org>
 
 # xinitrc runs automatically when you run startx.
