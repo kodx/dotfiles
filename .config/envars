@@ -44,7 +44,7 @@ export ELINKS_CONFDIR="$XDG_CONFIG_HOME"/elinks
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv/ComputeCache
 export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME"/nv/GLCache
 export GNUPGHOME="$XDG_DATA_HOME"/gnupg
-[ -n "$XDG_RUNTIME_DIR" ] && export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
+[ -n "$XDG_RUNTIME_DIR" ] && [ -z "$SSH_AUTH_SOCK" ] && export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"/ssh-agent.socket
 
 export EDITOR='vim'
 export TERMINAL='urxvtc'
@@ -75,7 +75,7 @@ export GPODDER_DOWNLOAD_DIR="${HOME}"/download/podcast
 export HF_HUB_CACHE="$HOME"/storage/llms/models
 
 # quick cd to underlying dirs
-export CDPATH=:..:~:~/work:~/work/dev:~/work/projects
+CDPATH=:..:~:~/work:~/work/dev:~/work/projects
 
 
 unset pathadd

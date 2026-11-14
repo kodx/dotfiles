@@ -129,7 +129,7 @@ set selection=inclusive
 
 " Редактирование
 set backspace=indent,eol,start
-set clipboard+=unnamed      " включаем X clipboard
+set clipboard+=unnamedplus  " включаем X clipboard
 set go+=a                   " выделение в виме копирует в буфер системы
 
 " Скролл

@@ -1,0 +1,47 @@
+# Alacritty configuration (TOML format, Alacritty 0.13+).
+# Colors: tango dark theme.
+
+[colors.primary]
+background = "#111111"
+foreground = "#b4b4b4"
+
+[colors.cursor]
+cursor = "#ffaf00"
+
+[colors.normal]
+black = "#000000"
+red = "#ff6565"
+green = "#93d44f"
+yellow = "#eab93d"
+blue = "#204a87"
+magenta = "#ce5c00"
+cyan = "#89b6e2"
+white = "#cccccc"
+
+[colors.bright]
+black = "#555753"
+red = "#ff8d8d"
+green = "#c8e7a8"
+yellow = "#ffc123"
+blue = "#3465a4"
+magenta = "#f57900"
+cyan = "#46a4ff"
+white = "#ffffff"
+
+[font]
+size = 11.0
+
+[font.normal]
+family = "FiraCode Nerd Font"
+style = "Medium"
+
+[font.bold]
+family = "FiraCode Nerd Font"
+style = "Bold"
+
+[font.bold_italic]
+family = "FiraCode Nerd Font"
+
+[cursor.style]
+shape = "Block"
+blinking = "Off"

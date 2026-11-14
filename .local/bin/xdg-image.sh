@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # $1 - action
 # $2 - type of file
@@ -40,7 +41,7 @@ do_open_action() {
     *)
         if [ -n "$DISPLAY" ]; then
             (gqview "${MC_EXT_FILENAME}" &)
-        elif see &>/dev/null; then
+        elif see >/dev/null 2>&1; then
             (see "${MC_EXT_FILENAME}" &)
         else
             zgv "${MC_EXT_FILENAME}"
@@ -54,7 +55,7 @@ do_edit_action () {
 
     case "${filetype}" in
     *)
-        gimp "${MC_EXT_FILENAME}" &>/dev/null &
+        gimp "${MC_EXT_FILENAME}" >/dev/null 2>&1 &
         ;;
     esac
 }

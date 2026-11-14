@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # $1 - action
 # $2 - type of file
@@ -26,11 +27,11 @@ do_open_action() {
 
     case "${filetype}" in
     ram)
-        (realplay "${MC_EXT_FILENAME}" &>/dev/null &)
+        (realplay "${MC_EXT_FILENAME}" >/dev/null 2>&1 &)
         ;;
     *)
         if [ -n "$DISPLAY" ]; then
-            ($player "${MC_EXT_FILENAME}" &>/dev/null &)
+            ($player "${MC_EXT_FILENAME}" >/dev/null 2>&1 &)
         else
             $player -vo null "${MC_EXT_FILENAME}"
         fi
@@ -45,9 +46,9 @@ view)
     do_view_action "${filetype}"
     ;;
 open)
-    "${MC_XDG_OPEN}" "${MC_EXT_FILENAME}" &>/dev/null || \
-        #do_open_action "${filetype}" >/dev/null 2>&1 &
+    if ! "${MC_XDG_OPEN}" "${MC_EXT_FILENAME}" >/dev/null 2>&1; then
         do_open_action "${filetype}" &
+    fi
     ;;
 *)
     ;;
