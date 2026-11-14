@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Author: Yegor Bayev <kodx.org>
+# Author: kodx <kodx.org>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Settings
