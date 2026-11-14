@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [alias]
+    aliases = config --get-regexp ^alias
+    amend = commit --amend --no-edit
     au = add -u
     bed = branch --edit-description
     br = branch -vv
@@ -9,13 +11,13 @@
     cc = rev-list HEAD --count
     cca = rev-list --all --count
     ci = commit -v
-    cleanall = clean -fdx # this is dangerous, so it's intentionally long to type
+    cleanall = clean -fd # removes untracked files only, ignored files are kept
     cm = commit -m
     cma = commit -a -m
     co = checkout
-    count = diff --stat "4b825dc642cb6eb9a060e54bf8d69288fbee4904" # hash of empty tree
-    credit = shortlog -sn
-    ctags = ! "ctg() { trap \"rm -f .git/tags.$$\" EXIT; ctags --tag-relative -Rf.git/tags.$$ --exclude=.git; mv .git/tags.$$ .git/tags; }; ctg"
+    credit = shortlog -sn HEAD
+    # delete local branches already merged into their upstream, e.g. git dbm 'origin/*'
+    dbm = branch --delete-merged
     dc = diff --cached
     dcs = diff --cached --stat
     dcw = diff --cached --color-words
@@ -29,9 +31,8 @@
     dus = diff @{u}... --stat
     duw = diff @{u}... --color-words
     empty-tree-hash = hash-object -t tree /dev/null
-    exec = ! "exec"
-    f = fetch --tags --prune
-    fa = fetch --all --tags --prune
+    f = fetch --tags
+    fa = fetch --all --tags
     ff = merge --ff-only
     gr = log --graph --format=line # graph
     gra = log --graph --format=line --all # graph all
@@ -39,38 +40,37 @@
     grd = log --graph --format=detail # graph detail
     grp = grep -C 1
     l = log --decorate --pretty=format:'%C(auto)%h%C(auto) %C(auto,cyan)(%cd)%Creset %s %C(auto)%d%C(auto) %C(auto,magenta)[%an]%C(auto)' --date='format:%Y-%m-%d %H:%M'
+    last = log -1 HEAD --stat
     lg = log -p
     linecredit = ! "lc() { git ls-tree --name-only -z -r HEAD | xargs -0 -n1 git diff --no-index --numstat /dev/null 2>/dev/null | grep -v '^-' | cut -f 3- | cut -d ' ' -f 3- | xargs -n1 git blame --line-porcelain | grep '^author ' | cut -d ' ' -f 2- | sort | uniq -c | sort -nr; }; lc"
     list = ls-tree -r HEAD --name-only
     ll = l --graph --branches --tags
     lll = l --graph --all
     llog = log --date=local
-    mirror-remote = ! "mr() { git push \"${2}\" \"refs/remotes/${1}/*:refs/heads/*\" && git remote set-head \"${2}\" -a; }; mr"
     noff = merge --no-ff
-    pub = "!f() { git push -u ${1:-origin} $(git symbolic-ref HEAD); }; f"
-    pullrb = pull --rebase
     put = push origin HEAD
     root = rev-parse --show-toplevel
+    rs = restore
     s = status -sb
-    save = commit -a -m "Save"
     sf = show --format=fuller --show-signature
     sfs = show --format=fuller --stat
     sfw = show --format=fuller --color-words
-    showtool = ! "st() { if [ -z $1 ]; then c='HEAD'; else c=$1; fi; git difftool $c~..$c; }; st"
     st = status
     staash = stash --include-untracked
+    stats = diff --stat "4b825dc642cb6eb9a060e54bf8d69288fbee4904" # line stats for all tracked files
     stsh = stash --keep-index
+    sw = switch
     # show tags with their types, without mark - lightweight, `a` - annotated, `b` - blob
     tags = for-each-ref --format='%(if:equals=tag)%(objecttype)%(then)a %(else)%(if:equals=blob)%(objecttype)%(then)b %(else)  %(end)%(end)%(align:20,right)%(refname:short)%09%(objectname:short)%(end)%09%(if:equals=tag)%(objecttype)%(then)@%(object) %(contents:subject)%(else)%(end)' --sort=taggerdate refs/tags
     tar = ! "tar() { git archive --format tar --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; tar"
     targz = ! "targz() { git archive --format tar.gz --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; targz"
+    unstage = restore --staged --
     up = pull --rebase
     update-submodules = submodule update --init --recursive
     upgrade-submodules = submodule update --init --remote
     versions = tag -l --sort=version:refname
-    w = whatchanged
+    w = log --raw --no-merges
     whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-    who = shortlog -s --
     whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
     zip = ! "zip() { git archive --format zip --prefix=\"${PWD##*/}/\" HEAD -o ${1}; }; zip"
     # usage:
@@ -96,27 +96,36 @@
     bump = !git versionbump
     # git-cliff version bump
     bump-cliff = "!f() { cd -- \"${GIT_PREFIX:-.}\" || exit 1; if ! command -v git-cliff > /dev/null 2>&1; then echo 'git-cliff not found, exit' >&2; exit 1; fi; ERRVAR=$(git-cliff --bumped-version 2>&1 > /dev/null); if [ -n \"$ERRVAR\" ]; then echo \"$ERRVAR\" >&2; exit 1; fi; V=$(git-cliff --bumped-version) || exit 1; echo \"bumping to $V\"; git tag -a \"$V\" -m \"$V\" \"$@\"; }; f"
-[core]
-    #pager = delta
-    #editor = 'c:/programs/sublimetext/subl.exe' -w --launch-or-new-window
-[interactive]
-    #diffFilter = delta --color-only
-[delta]
-    navigate = true  # use n and N to move between diff sections
+[commit]
+    verbose = true
 [merge]
     conflictstyle = zdiff3
+[fetch]
+    prune = true
+    followRemoteHEAD = warn
+[rerere]
+    enabled = true
+    autoUpdate = true
+[rebase]
+    autoSquash = true
+    updateRefs = true
 [user]
     useConfigOnly = true
 [init]
     defaultBranch = master
+[core]
+    excludesFile = ~/.gitignore
+[branch]
+    sort = -committerdate
+[tag]
+    sort = version:refname
+[column]
+    ui = auto
 [diff]
     mnemonicPrefix = true
+    algorithm = histogram
+    colorMoved = plain
     wordRegex = "[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+"
-    compactionHeuristic = true
-[color]
-    ui = auto
-    diff = auto
-    status = auto
 [color "grep"]
     match = cyan bold
     selected = blue
@@ -129,10 +138,15 @@
     line = "%C(auto)%h %<|(60,trunc)%s %C(green)%ad%C(auto)%d"
     detail = "%C(auto)%h %s%n  %C(yellow)by %C(blue)%an %C(magenta)<%ae> [%G?] %C(green)%ad%n %C(auto)%d%n"
 [push]
-    default = simple
+    autoSetupRemote = true
     followTags = true
+    useForceIfIncludes = true
+[transfer]
+    credentialsInUrl = warn
 [grep]
     lineNumber = true
+[help]
+    autoCorrect = 10
 # Allow local customizations in the config.local file
 [include]
     path = ~/.config/git/config.local
