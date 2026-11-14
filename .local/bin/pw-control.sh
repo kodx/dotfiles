@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Author: Yegor Bayev <kodx.org>
-# SPDX: AGPL-3.0-or-later
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Settings
 VOLSTEP=2%
@@ -15,24 +15,24 @@ if [ $# -eq 0 ] || [ $# -gt 2 ]; then
     echo 'helper script to control pipewire via pactl'
     echo ''
     echo 'where CMD:'
-    echo -e 'plus\t\tincrease sound volume'
-    echo -e 'minus\t\tdecrease sound volume'
-    echo -e 'mute\t\tdefault output mute toggle'
-    echo -e 'mic-mute\tdefault input mute toggle'
-    echo -e 'mic-mute 1\tmute default input'
-    echo -e 'mic-mute 0\tunmute default input'
-    echo -e 'swport\t\tswitch port from lineout to headphones and vice versa'
-    echo -e 'list-ports\tlist available ports of default output'
+    printf '%b\n' 'plus\t\tincrease sound volume'
+    printf '%b\n' 'minus\t\tdecrease sound volume'
+    printf '%b\n' 'mute\t\tdefault output mute toggle'
+    printf '%b\n' 'mic-mute\tdefault input mute toggle'
+    printf '%b\n' 'mic-mute 1\tmute default input'
+    printf '%b\n' 'mic-mute 0\tunmute default input'
+    printf '%b\n' 'swport\t\tswitch port from lineout to headphones and vice versa'
+    printf '%b\n' 'list-ports\tlist available ports of default output'
     echo ''
     echo 'Examples:'
-    echo -e '# add sound volume'
-    echo -e "$(basename "$0") plus"
+    printf '%b\n' '# add sound volume'
+    printf '%b\n' "$(basename "$0") plus"
     echo ''
-    echo -e '# switch port'
-    echo -e "$(basename "$0") swport"
+    printf '%b\n' '# switch port'
+    printf '%b\n' "$(basename "$0") swport"
     echo ''
-    echo -e '# toggle microphone mute'
-    echo -e "$(basename "$0") mic-mute"
+    printf '%b\n' '# toggle microphone mute'
+    printf '%b\n' "$(basename "$0") mic-mute"
     exit 1;
 fi
 
@@ -56,7 +56,7 @@ case "$1" in
         pactl set-sink-mute @DEFAULT_SINK@ toggle > /dev/null 2>&1
     ;;
     swport)
-        pactl set-sink-port @DEFAULT_SINK@ $(getport) > /dev/null 2>&1
+        pactl set-sink-port @DEFAULT_SINK@ "$(getport)" > /dev/null 2>&1
     ;;
     mic-mute)
         pactl set-source-mute @DEFAULT_SOURCE@ ${2:-'toggle'}

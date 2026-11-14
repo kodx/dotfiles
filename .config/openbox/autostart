@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# shellcheck shell=sh
+
 tint2 &
 #compton -CGb --backend glx --vsync &
 #picom -b
@@ -16,5 +19,4 @@ urxvtd -q -f -o && urxvtc -e tab$HOME $SHELL -ic "mc && $SHELL" tab$HOME $SHELL 
 #sleep 3s && firefox &
 sleep 3s && x-www-browser > /dev/null 2>&1
 #$HOME/work/programs/Telegram/Telegram &
-#yandex-disk start &
 

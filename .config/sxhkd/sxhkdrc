@@ -1,5 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 super + shift + q
-    obsession-logout
+    xlogout
 
 {control + alt + t, super + shift + Return}
     $TERMINAL
@@ -26,10 +28,10 @@ control + shift + Print
     scrot -s
 
 XF86Audio{LowerVolume,RaiseVolume,Mute}
-	pulsevol.sh {minus,plus,mute}
+	pw-control.sh {minus,plus,mute}
 
 super + control + h
-	pulsevol.sh swport
+	pw-control.sh swport
 
 control + alt + p
     $BROWSER -no-remote -private-window -P proxied
