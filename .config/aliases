@@ -199,6 +199,5 @@ aliasifpresent fd fdfind
 aliasifpresent m most
 aliasifpresent encaru enca '-L ru -x utf8'
 aliasifpresent subl "$HOME"/work/programs/sublime_text_3/sublime_text
-aliasifpresent pyradio "$HOME"/.local/bin/pyradio/pyradio "$HOME"/.local/bin/pyradio/stations.csv
 
 unset aliasifpresent AUR_HELPER
