@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 # kodx dotfiles
 # Author: kodx <kodx.org>
 
@@ -76,7 +77,7 @@ $ $0 fixlink
 EOM
 }
 
-if [ "$#" -eq 0 ] && [ ! $INSDOTFILES ] && [ ! $INSAPPS ] && [ ! $INSTALL ] && [ ! $INSCFGS ] && [ ! $FIXLINK ] && [ ! $MAKEDIRS ] ; then
+if [ "$#" -eq 0 ] && [ -z "$INSDOTFILES" ] && [ -z "$INSAPPS" ] && [ -z "$INSTALL" ] && [ -z "$INSCFGS" ] && [ -z "$FIXLINK" ] && [ -z "$MAKEDIRS" ] ; then
     usage
     unset usage
     return 1
@@ -84,8 +85,8 @@ fi
 
 # check is commands present
 checkcmd() {
-    for arg in $@; do
-        if ! $(command -v "$arg" > /dev/null); then
+    for arg in "$@"; do
+        if ! command -v "$arg" > /dev/null; then
             echo "command $arg not found, abort"
             return 1
         fi
@@ -111,27 +112,34 @@ insdotfiles() {
     checkcmd 'git' || return 1
 
     local _dfdir="$HOME/.dotfiles"
-    [ -d $_dfdir ] && rm -rf $_dfdir
-    cd $HOME
-    if [ ! $(git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir) ]; then
-        local dotfiles="git --git-dir=$_dfdir --work-tree=$HOME"
-        $dotfiles config --local status.showUntrackedFiles no
-        $dotfiles checkout -f
-        echo 'dotfiles install complete'
-        return 0
-    else
-        echo "git clone --bare 'https://github.com/kodx/dotfiles.git' $_dfdir failed!"
-        return 0
+    local _backup=''
+    cd "$HOME" || return 1
+    if [ -e "$_dfdir" ]; then
+        _backup="$_dfdir.bak.$(date +%s)"
+        mv "$_dfdir" "$_backup" || return 1
     fi
-    echo 'installing dotfiles complete'
+    if ! git clone --bare 'https://github.com/kodx/dotfiles.git' "$_dfdir"; then
+        echo 'git clone failed'
+        [ -n "$_backup" ] && mv "$_backup" "$_dfdir"
+        return 1
+    fi
+    local dotfiles="git --git-dir=$_dfdir --work-tree=$HOME"
+    $dotfiles config --local status.showUntrackedFiles no
+    if ! $dotfiles checkout -f; then
+        echo 'dotfiles checkout failed'
+        return 1
+    fi
+    [ -n "$_backup" ] && rm -rf "$_backup"
+    echo 'dotfiles install complete'
 }
 
 getapp() {
     [ "$#" -lt 2 ] && return 1
 
     local _bindir="$HOME/.local/bin"
-    local _cmdpath="$_bindir/$(basename $2)"
-    mkdir -p $_bindir
+    local _cmdpath
+    _cmdpath="$_bindir/$(basename "$2")"
+    mkdir -p "$_bindir"
 
     local _getopt=''
     case $(basename $1) in
@@ -139,24 +147,25 @@ getapp() {
             _getopt='-#L -C - -o '$_cmdpath
             ;;
         wget)
-            _getopt='-q --hsts-file /dev/null -nv -N --show-progress -P '$_bindir
+            _getopt='-q --hsts-file /dev/null -N -P '$_bindir
             ;;
         *)
-            echo 'get command $1 unknown, abort'
+            echo "get command $1 unknown, abort"
             return 1
             ;;
     esac
 
     echo "downloading $2"
-    $1 $2 $_getopt
-    [ -f $_cmdpath ] && chmod u+rx $_cmdpath
+    # shellcheck disable=SC2086 # _getopt holds several options on purpose
+    $1 "$2" $_getopt
+    [ -f "$_cmdpath" ] && chmod u+rx "$_cmdpath"
     return 0
 }
 
 # return first avialable command full path
 getcmd() {
-    for e in $@; do
-        $(command -v "$e" > /dev/null) && echo $(command -v "$e") && return 0
+    for e in "$@"; do
+        command -v "$e" > /dev/null && command -v "$e" && return 0
     done
     return 1
 }
@@ -164,13 +173,13 @@ getcmd() {
 
 insapps() {
     echo 'installing applications ...'
-    local _getcmd=$(getcmd 'curl wget')
-    [ $? -eq 0 ] || return 1
-    checkcmd "basename mkdir chmod $_getcmd" || return 1
+    local _getcmd
+    _getcmd=$(getcmd 'curl wget') || return 1
+    checkcmd 'basename mkdir chmod' || return 1
 
     # set apps urls
     local _mapps='
-        https://yt-dl.org/downloads/latest/youtube-dl
+        https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
         https://raw.githubusercontent.com/kodx/lightsOn/master/lightsOn.sh'
 
     for e in $_mapps; do
@@ -293,6 +302,7 @@ B0wBVkQ4dC2QX/P8GwEKY/BkLQAA'
 
 makedirs() {
     echo 'creating directories...'
+    cd "$HOME" || return 1
     local _dirlist='
         desktop
         docs
@@ -302,25 +312,25 @@ makedirs() {
         devel
         storage
     '
-    for e in "$_dirlist"; do
-        mkdir -pv $e
+    for e in $_dirlist; do
+        mkdir -pv "$e"
     done
     echo 'creating directories complete'
     return 0
 }
 
-if [ $INSTALL ] || $(test "$1" = 'install'); then
-    insdotfiles
-    inscfgs
-    insapps
-    makedirs
-    fixlink
+if [ -n "$INSTALL" ] || [ "$1" = 'install' ]; then
+    insdotfiles || exit 1
+    inscfgs || exit 1
+    insapps || exit 1
+    makedirs || exit 1
+    fixlink || exit 1
 else
-    [ $INSDOTFILES ] || [ "$1" = 'insdotfiles' ] && insdotfiles
-    [ $INSAPPS ] || [ "$1" = 'insapps' ] && insapps
-    [ $INSCFGS ] || [ "$1" = 'inscfgs' ] && inscfgs
-    [ $FIXLINK] || [ "$1" = 'fixlink' ] && fixlink
-    [ $MAKEDIRS] || [ "$1" = 'makedirs' ] && makedirs
+    if [ -n "$INSDOTFILES" ] || [ "$1" = 'insdotfiles' ]; then insdotfiles || exit 1; fi
+    if [ -n "$INSAPPS" ] || [ "$1" = 'insapps' ]; then insapps || exit 1; fi
+    if [ -n "$INSCFGS" ] || [ "$1" = 'inscfgs' ]; then inscfgs || exit 1; fi
+    if [ -n "$FIXLINK" ] || [ "$1" = 'fixlink' ]; then fixlink || exit 1; fi
+    if [ -n "$MAKEDIRS" ] || [ "$1" = 'makedirs' ]; then makedirs || exit 1; fi
 fi
 
 unset insdotfiles insapps usage getapp getcmd inscfgs checkcmd fixlink makedirs
