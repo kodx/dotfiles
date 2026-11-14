@@ -55,14 +55,24 @@ if [ "$UID" != 0 ]; then
     shopt -s cdspell
 fi
 
-if [ -f "$HOME"/.local/bin/git-prompt.sh ]; then
+# git prompt shipped by the git package: Arch, Debian/Ubuntu, Fedora
+for git_prompt in \
+    /usr/share/git/git-prompt.sh \
+    /usr/lib/git-core/git-sh-prompt \
+    /usr/share/git-core/contrib/completion/git-prompt.sh; do
+    [ -f "$git_prompt" ] && break
+done
+
+if [ -f "$git_prompt" ]; then
     # shellcheck source=/dev/null
-    source "$HOME"/.local/bin/git-prompt.sh
-    if command -v '__git_ps1' > /dev/null; then
-        use_git_prompt=yes
-    else
-        use_git_prompt=no
-    fi
+    . "$git_prompt"
+fi
+unset git_prompt
+
+if command -v '__git_ps1' > /dev/null; then
+    use_git_prompt=yes
+else
+    use_git_prompt=no
 fi
 
 if [ "$use_git_prompt" = yes ]; then
@@ -70,6 +80,8 @@ if [ "$use_git_prompt" = yes ]; then
     GIT_PS1_SHOWCOLORHINTS='yes'
     # shellcheck disable=SC2034 # read by git-prompt.sh
     GIT_PS1_SHOWDIRTYSTATE='yes'
+    # shellcheck disable=SC2034 # read by git-prompt.sh
+    GIT_PS1_SHOWCONFLICTSTATE='yes'
     PROMPT_COMMAND='__git_ps1 "\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;96m\]\w\[\033[00m\]" "\\\$ " " \[\033[01;35m\][\[\033[00m\]%s\[\033[01;35m\]]\[\033[00m\]"'
 else
     PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
